@@ -25,13 +25,14 @@ export const useStore = create<IState>((set) => ({
         const asset = assets[idx] as IAsset;
         if (asset) {
           const data = searchBy([asset?.data], state.activeNodeId, 'nodes') as any;
-          Object.keys(params).forEach(k => { // TODO Optimization
+          Object.keys(params).forEach((k) => {
+            // TODO Optimization
             if (data.params?.[key]?.[k] !== undefined) {
               if (data.params[key][k] !== params[k]) {
                 data.params[key][k] = params[k];
               }
             }
-          })
+          });
         }
       })
     ),
@@ -46,5 +47,5 @@ export const useStore = create<IState>((set) => ({
     }),
 
   activeNodeId: 1,
-  setActiveNodeId: (id) => set((_) => ({ activeNodeId: id })),
+  setActiveNodeId: (id) => set((_) => ({ activeNodeId: id }))
 }));

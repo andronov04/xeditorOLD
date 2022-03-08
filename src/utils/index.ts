@@ -17,6 +17,6 @@ export const searchBy = (arr: any, itemId: number, key: string) => {
   return arr.reduce((a: any, item: any) => {
     if (a) return a;
     if (item.id === itemId) return item;
-    if (item[key]) return searchBy(item[key], itemId, key)
+    if (item[key]) return searchBy(item[key], itemId, key);
   }, null);
 };

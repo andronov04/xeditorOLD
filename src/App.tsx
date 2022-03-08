@@ -8,14 +8,12 @@ const App: Component = () => {
   const state = useStore();
 
   onMount(async () => {
-    const temp_url = 'https://crxatorz.mypinata.cloud/ipfs/QmVN39DfgmGAS6bCGvMh9SF6G8kMsxMLtJ3rYJLtWkAfk7';
+    const temp_url = 'https://crxatorz.mypinata.cloud/ipfs/QmT5hShXi13Z7vKAmJh4NbhBwGXJLHiDLLi6hbKjRpkTzi';
     // Use from postData
-    state.setAssets([{ url: temp_url ?? DEV_ASSET_URL ?? 'http://localhost:8001' }])
+    state.setAssets([{ url: temp_url ?? DEV_ASSET_URL ?? 'http://localhost:8001' }]);
   });
 
-  return (
-    <Main />
-  );
+  return <Main />;
 };
 
 export default App;

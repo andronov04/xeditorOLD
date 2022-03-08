@@ -5,10 +5,8 @@ import StructureSide from './StructureSide/StructureSide';
 import Header from './Header/Header';
 
 const Main: Component = () => {
-
   return (
     <main>
-
       <Header />
 
       <StructureSide />
@@ -16,7 +14,6 @@ const Main: Component = () => {
       <Content />
 
       <ParameterSide />
-
     </main>
   );
 };

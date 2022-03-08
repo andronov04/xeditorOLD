@@ -6,10 +6,7 @@ import { invertedRange, range } from '../../../utils';
 import debounce from 'lodash.debounce';
 import { useStore } from '../../../store';
 
-export const InputNumber = (props: {
-  value: number,
-  setValue: (val: number) => void,
-}) => {
+export const InputNumber = (props: { value: number; setValue: (val: number) => void }) => {
   // const { value } = props;
   // TODO Validation
   return (
@@ -21,16 +18,10 @@ export const InputNumber = (props: {
         props.setValue(parseInt(e.currentTarget?.value));
       }}
     />
-  )
-}
+  );
+};
 
-export const InputRange = (props: {
-  min: number,
-  max: number,
-  minMin: number,
-  maxMax: number,
-  setValue: (val: number, key: string) => void,
-}) => {
+export const InputRange = (props: { min: number; max: number; minMin: number; maxMax: number; setValue: (val: number, key: string) => void }) => {
   const floor = true; // TODO Use props;
   const pointSize = '16px';
   const { minMin, maxMax, setValue } = props;
@@ -53,35 +44,39 @@ export const InputRange = (props: {
     const points = [refPoint1, refPoint2] as HTMLDivElement[];
     const gestures: any = [];
 
-    points.forEach(point => {
-      const gesture = new DragGesture(point, ({ event, first, xy: [x], movement: [mx], memo = {} }) => {
-        if (first) {
-          const { width, left } = outerLine.getBoundingClientRect();
-          lineWidth = width - parseFloat(pointSize);
+    points.forEach((point) => {
+      const gesture = new DragGesture(
+        point,
+        ({ event, first, xy: [x], movement: [mx], memo = {} }) => {
+          if (first) {
+            const { width, left } = outerLine.getBoundingClientRect();
+            lineWidth = width - parseFloat(pointSize);
 
-          memo.pos = invertedRange((x - left) / width, props.min, props.max);
-          const delta = Math.abs(memo.pos - props.min) - Math.abs(memo.pos - props.max)
-          memo.key = delta < 0 || (delta === 0 && memo.pos <= props.min) ? 'min' : 'max'
-          memo.pos = memo.key === 'min' ? props.min : props.max; //value[memo.key]
-        }
+            memo.pos = invertedRange((x - left) / width, props.min, props.max);
+            const delta = Math.abs(memo.pos - props.min) - Math.abs(memo.pos - props.max);
+            memo.key = delta < 0 || (delta === 0 && memo.pos <= props.min) ? 'min' : 'max';
+            memo.pos = memo.key === 'min' ? props.min : props.max; //value[memo.key]
+          }
 
-        const newValue = memo.pos + invertedRange(mx / lineWidth, 0, props.max - props.min);
-        let value = newValue;
-        if (floor) {
-          value = Math.floor(newValue);
-        } // TODO Step
+          const newValue = memo.pos + invertedRange(mx / lineWidth, 0, props.max - props.min);
+          let value = newValue;
+          if (floor) {
+            value = Math.floor(newValue);
+          } // TODO Step
 
-        // console.log('newValue', memo.key, value);
-        // TODO Set interval good
+          // console.log('newValue', memo.key, value);
+          // TODO Set interval good
 
-        // setState({[memo.key]: value});
-        setValue(value, memo.key);
+          // setState({[memo.key]: value});
+          setValue(value, memo.key);
 
-        return memo
-      }, { axis: 'x' });
+          return memo;
+        },
+        { axis: 'x' }
+      );
 
       gestures.push(gesture);
-    })
+    });
 
     onCleanup(() => gestures.forEach((g: any) => g.destroy()));
   });
@@ -91,12 +86,14 @@ export const InputRange = (props: {
 
   return (
     <div class={'relative'}>
-      <div ref={refOuterLine} class={'h-1.5 w-full bg-dark52 rounded-full'} >
-        <div style={{
-               left: minStyle(),
-               right: maxStyle(),
-             }}
-             class={'absolute h-1.5 w-auto bg-darkE7 rounded-full'} />
+      <div ref={refOuterLine} class={'h-1.5 w-full bg-dark52 rounded-full'}>
+        <div
+          style={{
+            left: minStyle(),
+            right: maxStyle()
+          }}
+          class={'absolute h-1.5 w-auto bg-darkE7 rounded-full'}
+        />
       </div>
 
       <div
@@ -105,7 +102,7 @@ export const InputRange = (props: {
           top: '-5.5px',
           left: minStyle(),
           width: pointSize,
-          height: pointSize,
+          height: pointSize
         }}
         class={'touch-none bg-white cursor-pointer hover:opacity-80 absolute h-4 w-4 rounded-full'}
       />
@@ -116,22 +113,15 @@ export const InputRange = (props: {
           top: '-5.5px',
           right: maxStyle(),
           width: pointSize,
-          height: pointSize,
+          height: pointSize
         }}
         class={'touch-none bg-white cursor-pointer hover:opacity-80 absolute h-4 w-4 rounded-full'}
       />
-
     </div>
-  )
-}
+  );
+};
 
-export const InputInterval = (props: {
-  min: number,
-  max: number,
-  minMin: number,
-  maxMax: number,
-  setParams: (params: any) => void,
-}) => {
+export const InputInterval = (props: { min: number; max: number; minMin: number; maxMax: number; setParams: (params: any) => void }) => {
   const { minMin, maxMax } = props;
   const [state, setState] = createStore({ min: props.min, max: props.max, minMin, maxMax });
 
@@ -169,10 +159,10 @@ export const InputInterval = (props: {
         />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export const Parameter = (props: { key: string, params: IParams, value: any }) => {
+export const Parameter = (props: { key: string; params: IParams; value: any }) => {
   const state = useStore();
   const key = props.key;
   const params = props.params;
@@ -186,11 +176,12 @@ export const Parameter = (props: { key: string, params: IParams, value: any }) =
 
   return (
     <div>
-      <h4>{params.name ?? key}
+      <h4>
+        {params.name ?? key}
         <span class={'ml-2 bg-dark41 rounded-sm px-1 py-0.5 text-xss'}>{value}</span>
       </h4>
       <p class={'opacity-50 text-xs'}>{params.description}</p>
-      {(params.min !== undefined && params.max !== undefined) &&
+      {params.min !== undefined && params.max !== undefined && (
         <div class={'py-1'}>
           <InputInterval
             min={params.min}
@@ -202,7 +193,7 @@ export const Parameter = (props: { key: string, params: IParams, value: any }) =
             // maxMax={params.maxMax ?? Infinity}
           />
         </div>
-      }
+      )}
     </div>
   );
-}
+};
