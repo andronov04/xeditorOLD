@@ -178,7 +178,7 @@ export const Parameter = (props: { key: string; params: IParams; value: any }) =
     <div>
       <h4>
         {params.name ?? key}
-        <span class={'ml-2 bg-dark41 rounded-sm px-1 py-0.5 text-xss'}>{value}</span>
+        {/*<span class={'ml-2 bg-dark41 rounded-sm px-1 py-0.5 text-xss'}>{value}</span>*/}
       </h4>
       <p class={'opacity-50 text-xs'}>{params.description}</p>
       {params.min !== undefined && params.max !== undefined && (

@@ -9,7 +9,7 @@ const Parameters = (props: { data: IAssetData; index: number }) => {
   const state = useStore();
 
   const _data = createMemo(() => {
-    return props.index === 0 ? searchBy([props.data], state.activeNodeId, 'nodes') : props.data;
+    return props.index === 0 ? searchBy([props.data], state.activeNodeId, 'children') : props.data;
   });
 
   const entries = createMemo(() => Object.entries(_data().params as IParams));

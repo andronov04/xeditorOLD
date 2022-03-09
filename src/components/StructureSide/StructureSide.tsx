@@ -8,20 +8,20 @@ const MAIN_NODE_NAME = 'Node';
 const StructureNode = (props: { data: IAssetData; index: number; activeNodeId: number; setActiveNodeId: (id: number) => void }) => {
   return (
     <div class={`${props.index === 0 ? '' : 'pl-2'}`}>
-      {
-        <h4
-          onClick={() => {
-            props.setActiveNodeId(props.data.id);
-          }}
-          id={`structure_${props.index}`}
-          class={`cursor-pointer hover:opacity-80 ${props.activeNodeId === props.data.id ? 'font-bold' : ''}`}
-        >
-          {props.data.params?.name ?? (props.index === 0 ? MAIN_NODE_NAME : `Element #${props.data.id}`)}
-        </h4>
-      }
+      <h4
+        onClick={() => {
+          props.setActiveNodeId(props.data.id);
+        }}
+        id={`structure_${props.index}`}
+        class={`relative cursor-pointer hover:opacity-80 ${props.activeNodeId === props.data.id ? 'font-bold' : ''}`}
+      >
+        {props.data.params?.name ?? (props.index === 0 ? MAIN_NODE_NAME : `Element #${props.data.id}`)}
+
+        {/*{props.data.childrenCount ? <i class={'text-small absolute -top-1 ml-0.5'}>{props.data.childrenCount}</i> : null}*/}
+      </h4>
 
       {
-        <For each={props.data.nodes}>
+        <For each={props.data.children}>
           {(asset) => <>{<StructureNode activeNodeId={props.activeNodeId} data={asset} setActiveNodeId={props.setActiveNodeId} index={props.index + 1} />}</>}
         </For>
       }
@@ -39,7 +39,7 @@ const StructureSide: Component = () => {
         <For each={state.assets}>
           {(asset) => (
             <>
-              {asset.data?.nodes.length && (
+              {asset.data?.children.length && (
                 <StructureNode activeNodeId={state.activeNodeId} data={asset.data} setActiveNodeId={state.setActiveNodeId} index={0} />
               )}
             </>

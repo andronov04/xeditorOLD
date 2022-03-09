@@ -23,9 +23,10 @@ export interface IValues {
 
 export interface IAssetData {
   id: number;
-  nodes: IAssetData[];
+  children: IAssetData[];
   params: IParams;
   values: IValues;
+  childrenCount: number;
 }
 
 export interface IAsset {

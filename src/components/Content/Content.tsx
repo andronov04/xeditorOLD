@@ -65,7 +65,13 @@ const Content: Component = () => {
                     // const data = deepCopy(asset.data);
                     // const dictionary: any = { id: data.params };
                     // console.log('dictionary', dictionary);
-                    e.currentTarget.contentWindow?.postMessage(deepCopy(asset.data), asset.url);
+                    e.currentTarget.contentWindow?.postMessage(
+                      {
+                        type: 'X_SEND_DATA',
+                        data: deepCopy(asset.data)
+                      },
+                      asset.url
+                    );
                   }
                   // console.log('load frame')
                 }}

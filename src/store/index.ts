@@ -24,7 +24,7 @@ export const useStore = create<IState>((set) => ({
         const assets = [...state.assets];
         const asset = assets[idx] as IAsset;
         if (asset) {
-          const data = searchBy([asset?.data], state.activeNodeId, 'nodes') as any;
+          const data = searchBy([asset?.data], state.activeNodeId, 'children') as any;
           Object.keys(params).forEach((k) => {
             // TODO Optimization
             if (data.params?.[key]?.[k] !== undefined) {
