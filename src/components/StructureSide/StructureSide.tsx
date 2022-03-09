@@ -7,7 +7,14 @@ const MAIN_NODE_NAME = 'Node';
 
 const StructureNode = (props: { data: IAssetData; index: number; activeNodeId: number; setActiveNodeId: (id: number) => void }) => {
   return (
-    <div class={`${props.index === 0 ? '' : 'pl-2'}`}>
+    <div
+      style={{
+        'border-left-color': '#525252',
+        'border-left-width': props.index === 0 ? '0px' : '1px',
+        'border-left-style': 'solid'
+      }}
+      class={`${props.index === 0 ? '' : 'ml-1 pl-1'}`}
+    >
       <h4
         onClick={() => {
           props.setActiveNodeId(props.data.id);

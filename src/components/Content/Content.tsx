@@ -23,7 +23,6 @@ const Content: Component = () => {
             window.addEventListener(
               'message',
               (event) => {
-                console.log('event.data-editor: ', event.data);
                 if (![MESSAGE_SEND_TO_DATA].includes(event.data?.type)) {
                   return;
                 }
@@ -34,12 +33,6 @@ const Content: Component = () => {
                 } else if (event.data.data) {
                   state.updateAsset({ url: asset.url, data: event.data.data, hash: asset.hash });
                 }
-                // if (!asset.data) {
-                //   state.updateAsset({ url: asset.url, data: event.data, hash: asset.hash });
-                // }
-                // TODO Fix not id in assets
-                // state.setActiveNodeId(0);
-                // state.setActiveNodeId(2);
               },
               false
             );

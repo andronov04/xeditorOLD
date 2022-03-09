@@ -48,7 +48,7 @@ const ParameterSide: Component = () => {
     <aside class={'p-2 absolute bg-dark21 z-20 w-250 h-full top-0 right-0'}>
       <h2>Parameters</h2>
 
-      <div class={'pt-2 text-sm'}>
+      <div style={{ height: '95%' }} class={'pt-2 text-sm overflow-scroll'}>
         {
           <For each={state.assets} fallback={<div>Loading...</div>}>
             {(assets) => <>{assets.data && <Parameters data={assets.data} index={0} />}</>}
