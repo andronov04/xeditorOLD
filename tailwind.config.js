@@ -13,8 +13,24 @@ module.exports = {
         250: '250px'
       },
       fontSize: {
-        small: '.55rem',
-        xss: '.65rem'
+        small: [
+          '0.55rem',
+          {
+            lineHeight: '1rem'
+          }
+        ],
+        xss: [
+          '0.65rem',
+          {
+            lineHeight: '1rem'
+          }
+        ],
+        smm: [
+          '0.82rem',
+          {
+            lineHeight: '1rem'
+          }
+        ]
       },
       colors: {
         dart2C: '#2c2c2c',

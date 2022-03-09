@@ -12,10 +12,25 @@ export const InputNumber = (props: { value: number; setValue: (val: number) => v
   return (
     <input
       type={'number'}
-      class={'bg-dark52 w-8 rounded-sm p-1 text-xs text-white'}
+      class={'bg-dark52 w-8 outline-none rounded-sm p-1 text-xs text-white'}
       value={props.value}
       onKeyUp={(e) => {
         props.setValue(parseInt(e.currentTarget?.value));
+      }}
+    />
+  );
+};
+
+export const InputCheckbox = (props: { value: boolean; setValue: (val: boolean) => void }) => {
+  // const { value } = props;
+  // TODO Validation
+  return (
+    <input
+      type={'checkbox'}
+      class={'bg-dark52 w-4 input-checkbox h-4 text-dark52 outline-none rounded-sm text-xs appearance-none '}
+      value={props.value ? 'checked' : ''}
+      onKeyUp={(e) => {
+        props.setValue(e.currentTarget?.value === 'checked');
       }}
     />
   );
@@ -162,6 +177,44 @@ export const InputInterval = (props: { min: number; max: number; minMin: number;
   );
 };
 
+export const InputArray = (props: { array: any[]; setParams: (params: any) => void }) => {
+  // TODO Check .value or simple
+  return (
+    <ul class={'w-full flex justify-center gap-y-2 flex-col '}>
+      {props.array.map((a) => {
+        const isArr = typeof a === 'object' && a.length === 2;
+        const obj = isArr ? a[0] : a;
+        return (
+          <li class={'flex items-center'}>
+            <label class={'flex-grow inline-flex items-center'}>
+              <InputCheckbox
+                value={true}
+                setValue={(val) => {
+                  //
+                }}
+              />
+              <div class={'px-2'}>
+                <h5 class={'text-smm'}>{obj?.name ?? obj?.value ?? obj}</h5>
+                {obj?.description ? <p class={'opacity-50 text-xss'}>{obj?.description}</p> : null}
+              </div>
+            </label>
+            {isArr ? (
+              <div>
+                <InputNumber
+                  value={a[1]}
+                  setValue={(val) => {
+                    //
+                  }}
+                />
+              </div>
+            ) : null}
+          </li>
+        );
+      })}
+    </ul>
+  );
+};
+
 export const Parameter = (props: { key: string; params: IParams; value: any }) => {
   const state = useStore();
   const key = props.key;
@@ -192,6 +245,11 @@ export const Parameter = (props: { key: string; params: IParams; value: any }) =
             // minMin={params.minMin ?? Infinity}
             // maxMax={params.maxMax ?? Infinity}
           />
+        </div>
+      )}
+      {params.array?.length && (
+        <div class={'py-1'}>
+          <InputArray array={params.array} setParams={setParams} />
         </div>
       )}
     </div>

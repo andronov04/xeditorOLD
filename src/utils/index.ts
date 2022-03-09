@@ -1,5 +1,5 @@
 // TODO Import from sdk
-export const RESERVED_LIST = ['min', 'max', 'value', 'step', 'node', 'name', 'description', 'hint', 'options', 'floor', 'array', 'arrayWeights', 'options'];
+export const RESERVED_LIST = ['min', 'max', 'value', 'step', 'node', 'name', 'description', 'hint', 'options', 'floor', 'array', 'options'];
 
 export const clamp = (x: number, min: number, max: number) => (x > max ? max : x < min ? min : x);
 

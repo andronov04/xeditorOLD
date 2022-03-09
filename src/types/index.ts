@@ -8,6 +8,7 @@ export interface IParams {
   maxMax?: number;
 
   value?: number;
+  array?: any[];
 
   floor?: boolean;
 
