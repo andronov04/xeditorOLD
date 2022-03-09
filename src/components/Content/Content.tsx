@@ -2,6 +2,7 @@ import type { Component } from 'solid-js';
 import { For, onMount } from 'solid-js';
 import { useStore } from '../../store';
 import { deepCopy } from '../../utils';
+import { MESSAGE_SEND_TO_DATA } from '../../constants';
 
 const DEFAULT_WIDTH = 400;
 const DEFAULT_HEIGHT = 400;
@@ -22,21 +23,23 @@ const Content: Component = () => {
             window.addEventListener(
               'message',
               (event) => {
-                if ([asset.url].includes(event.origin)) {
-                  // console.log('event.data: ', event.data);
-                  if (asset.data) {
-                    // TODO Why?
-                    state.updateAsset({ url: asset.url, data: { ...asset.data, values: event.data.values }, hash: asset.hash });
-                  } else {
-                    state.updateAsset({ url: asset.url, data: event.data, hash: asset.hash });
-                  }
-                  // if (!asset.data) {
-                  //   state.updateAsset({ url: asset.url, data: event.data, hash: asset.hash });
-                  // }
-                  // TODO Fix not id in assets
-                  // state.setActiveNodeId(0);
-                  // state.setActiveNodeId(2);
+                console.log('event.data-editor: ', event.data);
+                if (![MESSAGE_SEND_TO_DATA].includes(event.data?.type)) {
+                  return;
                 }
+                // console.log('event.data: ', event.data);
+                if (asset.data) {
+                  // TODO Why?
+                  state.updateAsset({ url: asset.url, data: { ...asset.data, values: event.data.data.values }, hash: asset.hash });
+                } else if (event.data.data) {
+                  state.updateAsset({ url: asset.url, data: event.data.data, hash: asset.hash });
+                }
+                // if (!asset.data) {
+                //   state.updateAsset({ url: asset.url, data: event.data, hash: asset.hash });
+                // }
+                // TODO Fix not id in assets
+                // state.setActiveNodeId(0);
+                // state.setActiveNodeId(2);
               },
               false
             );
