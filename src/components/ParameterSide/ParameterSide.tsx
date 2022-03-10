@@ -5,7 +5,7 @@ import { createMemo, For } from 'solid-js';
 import { Parameter } from './Parameter/Parameter';
 import { RESERVED_LIST, searchBy } from '../../utils';
 
-const Parameters = (props: { data: IAssetData; index: number }) => {
+const Parameters = (props: { data: IAssetData; keys: string[]; index: number }) => {
   const state = useStore();
 
   const _data = createMemo(() => {
@@ -22,15 +22,17 @@ const Parameters = (props: { data: IAssetData; index: number }) => {
         {
           <For each={entries().filter((a) => !RESERVED_LIST.includes(a[0]))} fallback={<div>Loading...</div>}>
             {(entry) => {
-              const keys = Object.keys(entry[1]);
-              const inter = keys.filter((a) => RESERVED_LIST.includes(a));
+              const _keys = Object.keys(entry[1]);
+              const inter = _keys.filter((a) => RESERVED_LIST.includes(a));
 
-              if (inter.length !== keys.length && typeof entry[1] === 'object') {
-                return <Parameters data={{ params: entry[1], values: values()[entry[0]] } as IAssetData} index={props.index + 1} />;
+              if (inter.length !== _keys.length && typeof entry[1] === 'object') {
+                return (
+                  <Parameters keys={[...props.keys, entry[0]]} data={{ params: entry[1], values: values()[entry[0]] } as IAssetData} index={props.index + 1} />
+                );
               }
               return (
                 <div class={'mb-2'}>
-                  <Parameter key={entry[0]} params={entry[1] as any} value={values()[entry[0]]} />
+                  <Parameter keys={props.keys} key={entry[0]} params={entry[1] as any} value={values()[entry[0]]} />
                 </div>
               );
             }}
@@ -51,7 +53,7 @@ const ParameterSide: Component = () => {
       <div style={{ height: '95%' }} class={'pt-2 text-sm overflow-scroll'}>
         {
           <For each={state.assets} fallback={<div>Loading...</div>}>
-            {(assets) => <>{assets.data && <Parameters data={assets.data} index={0} />}</>}
+            {(assets) => <>{assets.data && <Parameters keys={[]} data={assets.data} index={0} />}</>}
           </For>
         }
       </div>

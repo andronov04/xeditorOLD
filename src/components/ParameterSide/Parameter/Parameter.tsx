@@ -233,16 +233,16 @@ export const InputArray = (props: { array: any[]; setParams: (params: any) => vo
   );
 };
 
-export const Parameter = (props: { key: string; params: IParams; value: any }) => {
+export const Parameter = (props: { keys: string[]; key: string; params: IParams; value: any }) => {
   const state = useStore();
   const key = props.key;
   const params = props.params;
+  const keys = props.keys; // Parent keys
   // const value = props.value;
   // console.log('k-v', key, params, value);
   // debounce update data assets params
   const setParams = debounce((params: any) => {
-    // TODO Nested key fix
-    state.updateAssetParams(key, params);
+    state.updateAssetParams([...keys, key], params);
   }, 1000);
 
   return (

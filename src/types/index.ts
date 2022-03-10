@@ -40,7 +40,7 @@ export interface IState {
   assets: IAsset[];
   setAssets: (assets: IAsset[]) => void;
   updateAsset: (assets: IAsset) => void;
-  updateAssetParams: (key: string, params: any) => void;
+  updateAssetParams: (keys: string[], params: any) => void;
 
   activeNodeId: number;
   setActiveNodeId: (id: number) => void;

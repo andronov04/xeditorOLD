@@ -17,7 +17,7 @@ export const useStore = create<IState>((set) => ({
         return { assets };
       })
     ),
-  updateAssetParams: (key: string, params: any) =>
+  updateAssetParams: (keys: string[], params: any) =>
     set(
       produce((state) => {
         const idx = 0; // TODO use active current
@@ -27,10 +27,12 @@ export const useStore = create<IState>((set) => ({
           const data = searchBy([asset?.data], state.activeNodeId, 'children') as any;
           Object.keys(params).forEach((k) => {
             // TODO Optimization
-            if (data.params?.[key]?.[k] !== undefined) {
-              if (data.params[key][k] !== params[k]) {
-                data.params[key][k] = params[k];
-              }
+            let _params = data.params;
+            keys.forEach((key) => {
+              _params = _params[key];
+            });
+            if (_params !== undefined && _params[k] !== params[k]) {
+              _params[k] = params[k];
             }
           });
         }
