@@ -2,16 +2,18 @@ import { IParams } from '../../../types';
 import { createEffect, createMemo, onCleanup, onMount } from 'solid-js';
 import { DragGesture } from '@use-gesture/vanilla';
 import { createStore } from 'solid-js/store';
-import { invertedRange, range } from '../../../utils';
+import { deepCopy, invertedRange, range } from '../../../utils';
 import debounce from 'lodash.debounce';
 import { useStore } from '../../../store';
 
-export const InputNumber = (props: { value: number; setValue: (val: number) => void }) => {
+export const InputNumber = (props: { value: number; min?: number; max?: number; setValue: (val: number) => void }) => {
   // const { value } = props;
-  // TODO Validation
+  // TODO Validation and valid min/max
   return (
     <input
       type={'number'}
+      min={props.min ?? Infinity}
+      max={props.max ?? Infinity}
       class={'bg-dark52 w-8 outline-none rounded-sm p-1 text-xs text-white'}
       value={props.value}
       onKeyUp={(e) => {
@@ -28,9 +30,9 @@ export const InputCheckbox = (props: { value: boolean; setValue: (val: boolean) 
     <input
       type={'checkbox'}
       class={'bg-dark52 w-4 input-checkbox h-4 text-dark52 outline-none rounded-sm text-xs appearance-none '}
-      value={props.value ? 'checked' : ''}
-      onKeyUp={(e) => {
-        props.setValue(e.currentTarget?.value === 'checked');
+      checked={props.value}
+      onChange={(e) => {
+        props.setValue(e.currentTarget?.checked);
       }}
     />
   );
@@ -44,8 +46,6 @@ export const InputRange = (props: { min: number; max: number; minMin: number; ma
   // const max = props.max;
   // const [state, setState] = createStore({ width: 138 });
   let lineWidth = 0;
-  // console.log('state---', state);
-
   let refPoint1: any;
   let refPoint2: any;
   let refOuterLine: any;
@@ -145,7 +145,7 @@ export const InputInterval = (props: { min: number; max: number; minMin: number;
   });
 
   return (
-    <div class={'flex gap-x-2 items-center'}>
+    <div class={'flex gap-x-2 items-center hover:opacity-80'}>
       <div class={'w-8'}>
         <InputNumber
           value={state.min}
@@ -178,40 +178,58 @@ export const InputInterval = (props: { min: number; max: number; minMin: number;
 };
 
 export const InputArray = (props: { array: any[]; setParams: (params: any) => void }) => {
-  // TODO Check .value or simple
+  const [state, setState] = createStore<{ indexer: number[]; array: any[] }>({
+    indexer: props.array.map((_, i) => i),
+    array: []
+  });
+  onMount(async () => {
+    setState({ ...state, array: deepCopy(props.array) });
+  });
+
   return (
-    <ul class={'w-full flex justify-center gap-y-2 flex-col '}>
-      {props.array.map((a) => {
-        const isArr = typeof a === 'object' && a.length === 2;
-        const obj = isArr ? a[0] : a;
-        return (
-          <li class={'flex items-center'}>
-            <label class={'flex-grow inline-flex items-center'}>
-              <InputCheckbox
-                value={true}
-                setValue={(val) => {
-                  //
-                }}
-              />
-              <div class={'px-2'}>
-                <h5 class={'text-smm'}>{obj?.name ?? obj?.value ?? obj}</h5>
-                {obj?.description ? <p class={'opacity-50 text-xss'}>{obj?.description}</p> : null}
-              </div>
-            </label>
-            {isArr ? (
-              <div>
-                <InputNumber
-                  value={a[1]}
+    <div class={'overflow-scroll max-h-[10rem] '}>
+      <ul class={'w-full flex justify-center gap-y-2 flex-col '}>
+        {state.array.map((a, i) => {
+          const isArr = typeof a === 'object' && a.length === 2;
+          const obj = isArr ? a[0] : a;
+          return (
+            <li class={'flex items-center hover:opacity-80'}>
+              <label class={'flex-grow inline-flex cursor-pointer items-center'}>
+                <InputCheckbox
+                  value={state.indexer.some((idx) => idx === i)}
                   setValue={(val) => {
-                    //
+                    let indexer: any = [...state.indexer, ...[i]];
+                    if (!val) {
+                      indexer = [...state.indexer.filter((a) => a !== i)];
+                    }
+                    setState({ indexer });
+                    props.setParams({ array: [...state.array.filter((_, i) => indexer.includes(i))] });
                   }}
                 />
-              </div>
-            ) : null}
-          </li>
-        );
-      })}
-    </ul>
+                <div class={'px-2'}>
+                  <h5 class={'text-smm'}>{obj?.name ?? obj?.value ?? obj}</h5>
+                  {obj?.description ? <p class={'opacity-50 text-xss'}>{obj?.description}</p> : null}
+                </div>
+              </label>
+              {isArr ? (
+                <div>
+                  <InputNumber
+                    value={a[1]}
+                    min={0}
+                    max={100}
+                    setValue={(val) => {
+                      const new_array = deepCopy([...state.array.filter((_, i) => state.indexer.includes(i))]);
+                      new_array[i][1] = val;
+                      props.setParams({ array: new_array });
+                    }}
+                  />
+                </div>
+              ) : null}
+            </li>
+          );
+        })}
+      </ul>
+    </div>
   );
 };
 
@@ -219,7 +237,7 @@ export const Parameter = (props: { key: string; params: IParams; value: any }) =
   const state = useStore();
   const key = props.key;
   const params = props.params;
-  const value = props.value;
+  // const value = props.value;
   // console.log('k-v', key, params, value);
   // debounce update data assets params
   const setParams = debounce((params: any) => {
