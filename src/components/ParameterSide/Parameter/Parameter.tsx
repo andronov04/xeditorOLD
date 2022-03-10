@@ -5,6 +5,7 @@ import { createStore } from 'solid-js/store';
 import { deepCopy, invertedRange, range } from '../../../utils';
 import debounce from 'lodash.debounce';
 import { useStore } from '../../../store';
+import Tooltip from '../../Library/Tooltip/Tooltip';
 
 export const InputNumber = (props: { value: number; min?: number; max?: number; setValue: (val: number) => void }) => {
   // const { value } = props;
@@ -247,9 +248,13 @@ export const Parameter = (props: { keys: string[]; key: string; params: IParams;
 
   return (
     <div>
-      <h4>
+      <h4 class={'relative'}>
         {params.name ?? key}
-        {/*<span class={'ml-2 bg-dark41 rounded-sm px-1 py-0.5 text-xss'}>{value}</span>*/}
+        {params.hint ? (
+          <div class={'absolute right-0 top-0'}>
+            <Tooltip text={params.hint} />
+          </div>
+        ) : null}
       </h4>
       <p class={'opacity-50 text-xs'}>{params.description}</p>
       {params.min !== undefined && params.max !== undefined && (
