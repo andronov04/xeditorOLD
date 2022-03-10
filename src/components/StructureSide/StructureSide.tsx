@@ -10,10 +10,10 @@ const StructureNode = (props: { data: IAssetData; index: number; activeNodeId: n
     <div
       style={{
         'border-left-color': '#525252',
-        'border-left-width': props.index === 0 ? '0px' : '1px',
+        'border-left-width': '1px',
         'border-left-style': 'solid'
       }}
-      class={`${props.index === 0 ? '' : 'ml-1 pl-1'}`}
+      class={'ml-1 pl-1'}
     >
       <h4
         onClick={() => {
@@ -45,11 +45,12 @@ const StructureSide: Component = () => {
       <div style={{ height: '95%' }} class={'text-sm overflow-scroll'}>
         <For each={state.assets}>
           {(asset) => (
-            <>
+            <div>
+              {asset.metadata?.name ? <h2 class={'italic'}>{asset.metadata?.name}</h2> : null}
               {asset.data?.children.length && (
                 <StructureNode activeNodeId={state.activeNodeId} data={asset.data} setActiveNodeId={state.setActiveNodeId} index={0} />
               )}
-            </>
+            </div>
           )}
         </For>
       </div>

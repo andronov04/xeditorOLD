@@ -12,8 +12,9 @@ export const useStore = create<IState>((set) => ({
     set(
       produce((state) => {
         const idx = (state.assets as IAsset[]).findIndex((a) => a.url === payload.url);
+        console.log('idx', idx, payload.url);
         const assets = [...state.assets];
-        assets[idx] = { url: payload.url, data: payload.data, hash: payload.hash };
+        assets[idx] = { url: payload.url, data: payload.data, hash: payload.hash, metadata: payload.metadata };
         return { assets };
       })
     ),

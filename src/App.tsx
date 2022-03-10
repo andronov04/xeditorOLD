@@ -8,7 +8,15 @@ const App: Component = () => {
   const state = useStore();
 
   onMount(async () => {
-    state.setAssets([{ url: DEV_ASSET_URL ?? 'http://localhost:8001' }]);
+    const test_metadata = {
+      name: 'Suprematism'
+    };
+    state.setAssets([
+      {
+        url: DEV_ASSET_URL ?? 'http://localhost:8001',
+        metadata: test_metadata
+      }
+    ]);
   });
 
   return <Main />;

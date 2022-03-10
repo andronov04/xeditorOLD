@@ -29,9 +29,9 @@ const Content: Component = () => {
                 // console.log('event.data: ', event.data);
                 if (asset.data) {
                   // TODO Why?
-                  state.updateAsset({ url: asset.url, data: { ...asset.data, values: event.data.data.values }, hash: asset.hash });
+                  state.updateAsset({ ...asset, data: { ...asset.data, values: event.data.data.values } });
                 } else if (event.data.data) {
-                  state.updateAsset({ url: asset.url, data: event.data.data, hash: asset.hash });
+                  state.updateAsset({ ...asset, data: event.data.data });
                 }
               },
               false

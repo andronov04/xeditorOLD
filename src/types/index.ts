@@ -30,10 +30,15 @@ export interface IAssetData {
   childrenCount: number;
 }
 
+export interface IAssetMetadata {
+  name: string;
+}
+
 export interface IAsset {
   url: string;
   data?: IAssetData;
   hash?: string;
+  metadata?: IAssetMetadata;
 }
 
 export interface IState {
