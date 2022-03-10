@@ -42,8 +42,8 @@ const StructureSide: Component = () => {
     <aside class={'p-2 absolute bg-dark21 z-20 w-250 h-full top-0 left-0'}>
       <h2>Structure</h2>
 
-      <div style={{ height: '95%' }} class={'text-sm overflow-scroll'}>
-        <For each={state.assets}>
+      <div style={{ height: '95%' }} class={'text-sm pt-2 overflow-scroll'}>
+        <For each={state.assets} fallback={<div>Loading...</div>}>
           {(asset) => (
             <div>
               {asset.metadata?.name ? <h2 class={'italic'}>{asset.metadata?.name}</h2> : null}

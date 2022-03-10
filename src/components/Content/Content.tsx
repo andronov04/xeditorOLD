@@ -2,7 +2,7 @@ import type { Component } from 'solid-js';
 import { For, onMount } from 'solid-js';
 import { useStore } from '../../store';
 import { deepCopy } from '../../utils';
-import { MESSAGE_SEND_TO_DATA } from '../../constants';
+import { MESSAGE_SEND_ASSET, MESSAGE_SEND_TO_DATA } from '../../constants';
 
 const DEFAULT_WIDTH = 400;
 const DEFAULT_HEIGHT = 400;
@@ -23,15 +23,13 @@ const Content: Component = () => {
             window.addEventListener(
               'message',
               (event) => {
-                if (![MESSAGE_SEND_TO_DATA].includes(event.data?.type)) {
-                  return;
-                }
-                // console.log('event.data: ', event.data);
-                if (asset.data) {
-                  // TODO Why?
-                  state.updateAsset({ ...asset, data: { ...asset.data, values: event.data.data.values } });
-                } else if (event.data.data) {
-                  state.updateAsset({ ...asset, data: event.data.data });
+                if (event.data?.type === MESSAGE_SEND_TO_DATA) {
+                  if (asset.data) {
+                    // TODO Why?
+                    state.updateAsset({ ...asset, data: { ...asset.data, values: event.data.data.values } });
+                  } else if (event.data.data) {
+                    state.updateAsset({ ...asset, data: event.data.data });
+                  }
                 }
               },
               false
