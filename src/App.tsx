@@ -2,7 +2,7 @@ import type { Component } from 'solid-js';
 import Main from './components/Main';
 import { onMount } from 'solid-js';
 import { useStore } from './store';
-import { MESSAGE_GENERATE_NEW, MESSAGE_SEND_ASSET } from './constants';
+import { MESSAGE_GENERATE_NEW, MESSAGE_GET_ASSET_META, MESSAGE_SEND_ASSET } from './constants';
 
 const App: Component = () => {
   const state = useStore();
@@ -15,6 +15,14 @@ const App: Component = () => {
           state.setAssets(event.data.data);
         } else if (event.data?.type === MESSAGE_GENERATE_NEW) {
           state.generate();
+        } else if (event.data?.type === MESSAGE_GET_ASSET_META) {
+          window.parent.window.postMessage(
+            {
+              type: MESSAGE_GET_ASSET_META,
+              data: event.data.data
+            },
+            document.referrer
+          );
         }
       },
       false
