@@ -30,7 +30,7 @@ export interface IAssetData {
   childrenCount: number;
 }
 
-export interface IAssetMetadata {
+export interface IAssetBase {
   name: string;
 }
 
@@ -38,8 +38,7 @@ export interface IAsset {
   url: string;
   data?: IAssetData;
   hash?: string;
-  asset?: any;
-  metadata?: IAssetMetadata;
+  asset?: IAssetBase;
 }
 
 export interface IState {

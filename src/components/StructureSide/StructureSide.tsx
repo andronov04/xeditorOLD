@@ -46,7 +46,7 @@ const StructureSide: Component = () => {
         <For each={state.assets} fallback={<div>Loading...</div>}>
           {(asset) => (
             <div>
-              {asset.metadata?.name ? <h2 class={'italic'}>{asset.metadata?.name}</h2> : null}
+              {asset.asset?.name ? <h2 class={'italic'}>{asset.asset?.name}</h2> : null}
               {asset.data?.children.length && (
                 <StructureNode activeNodeId={state.activeNodeId} data={asset.data} setActiveNodeId={state.setActiveNodeId} index={0} />
               )}
