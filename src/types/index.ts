@@ -38,6 +38,7 @@ export interface IAsset {
   url: string;
   data?: IAssetData;
   hash?: string;
+  asset?: any;
   metadata?: IAssetMetadata;
 }
 

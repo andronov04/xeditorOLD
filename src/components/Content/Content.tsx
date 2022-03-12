@@ -2,7 +2,7 @@ import type { Component } from 'solid-js';
 import { For, onMount } from 'solid-js';
 import { useStore } from '../../store';
 import { deepCopy } from '../../utils';
-import { MESSAGE_SEND_ASSET, MESSAGE_SEND_TO_DATA } from '../../constants';
+import { MESSAGE_SEND_TO_DATA } from '../../constants';
 
 const DEFAULT_WIDTH = 400;
 const DEFAULT_HEIGHT = 400;
@@ -45,32 +45,34 @@ const Content: Component = () => {
               }}
               class={'iframe_container'}
             >
-              <iframe
-                width={'100%'}
-                height={'100%'}
-                src={`${asset.url}?editor=1&data=${asset.data ? 1 : 0}${asset.hash ? `&test=${asset.hash}` : ''}`}
-                class={'iframe'}
-                onLoad={(e) => {
-                  // TODO Patch store
-                  console.log('asset-onLoad', asset);
+              {asset.url ? (
+                <iframe
+                  width={'100%'}
+                  height={'100%'}
+                  src={`${asset.url}?editor=1&data=${asset.data ? 1 : 0}${asset.hash ? `&test=${asset.hash}` : ''}`}
+                  class={'iframe'}
+                  onLoad={(e) => {
+                    // TODO Patch store
+                    console.log('asset-onLoad', asset);
 
-                  if (asset.data) {
-                    // TODO Cache use {id:params}
-                    // const data = deepCopy(asset.data);
-                    // const dictionary: any = { id: data.params };
-                    // console.log('dictionary', dictionary);
-                    e.currentTarget.contentWindow?.postMessage(
-                      {
-                        type: 'X_SEND_DATA',
-                        data: deepCopy(asset.data)
-                      },
-                      asset.url
-                    );
-                  }
-                  // console.log('load frame')
-                }}
-                sandbox={'allow-same-origin allow-scripts'}
-              />
+                    if (asset.data) {
+                      // TODO Cache use {id:params}
+                      // const data = deepCopy(asset.data);
+                      // const dictionary: any = { id: data.params };
+                      // console.log('dictionary', dictionary);
+                      e.currentTarget.contentWindow?.postMessage(
+                        {
+                          type: 'X_SEND_DATA',
+                          data: deepCopy(asset.data)
+                        },
+                        asset.url
+                      );
+                    }
+                    // console.log('load frame')
+                  }}
+                  sandbox={'allow-same-origin allow-scripts'}
+                />
+              ) : null}
             </div>
           );
         }}
