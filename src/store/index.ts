@@ -1,7 +1,7 @@
 import create from 'solid-zustand';
 import produce, { setAutoFreeze } from 'immer';
-import { IAsset, IAssetData, IState } from '../types';
-import { deepCopy, searchBy } from '../utils';
+import { IAsset, IAssetMeta, IState } from '../types';
+import { getUrl, searchBy } from '../utils';
 
 setAutoFreeze(false);
 
@@ -11,9 +11,18 @@ export const useStore = create<IState>((set) => ({
   updateAsset: (payload: IAsset) =>
     set(
       produce((state) => {
-        const idx = (state.assets as IAsset[]).findIndex((a) => a.url === payload.url);
+        const idx = (state.assets as IAsset[]).findIndex((a) => getUrl(a) === getUrl(payload));
         const assets = [...state.assets];
-        assets[idx] = { url: payload.url, data: payload.data, hash: payload.hash, asset: payload.asset };
+        assets[idx] = { ...assets[idx], ...payload };
+        return { assets };
+      })
+    ),
+  updateAssetMeta: (url: string, meta: IAssetMeta) =>
+    set(
+      produce((state) => {
+        const idx = (state.assets as IAsset[]).findIndex((a) => getUrl(a) === url);
+        const assets = [...state.assets];
+        assets[idx] = { ...assets[idx], meta };
         return { assets };
       })
     ),
@@ -39,11 +48,11 @@ export const useStore = create<IState>((set) => ({
       })
     ),
 
-  generate: () =>
+  generate: (requestId: string) =>
     set((state) => {
       const assets = [...state.assets];
       assets.forEach((asset) => {
-        asset.hash = Math.random().toString();
+        asset.requestId = requestId;
       });
       return { assets };
     }),

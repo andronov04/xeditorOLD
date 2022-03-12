@@ -14,15 +14,20 @@ const App: Component = () => {
         if (event.data?.type === MESSAGE_SEND_ASSET) {
           state.setAssets(event.data.data);
         } else if (event.data?.type === MESSAGE_GENERATE_NEW) {
-          state.generate();
+          state.generate(event.data.data.requestId);
         } else if (event.data?.type === MESSAGE_GET_ASSET_META) {
-          window.parent.window.postMessage(
-            {
-              type: MESSAGE_GET_ASSET_META,
-              data: event.data.data
-            },
-            document.referrer
-          );
+          const meta = {
+            digest: event.data.data.digest,
+            hash: event.data.data.hash
+          };
+          state.updateAssetMeta(event.data.data.url, meta);
+          // window.parent.window.postMessage(
+          //   {
+          //     type: MESSAGE_GET_ASSET_META,
+          //     data: event.data.data
+          //   },
+          //   document.referrer
+          // );
         }
       },
       false

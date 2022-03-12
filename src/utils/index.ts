@@ -1,4 +1,6 @@
 // TODO Import from sdk
+import { IAsset } from '../types';
+
 export const RESERVED_LIST = ['min', 'max', 'value', 'step', 'node', 'name', 'description', 'hint', 'options', 'floor', 'array', 'options'];
 
 export const clamp = (x: number, min: number, max: number) => (x > max ? max : x < min ? min : x);
@@ -19,4 +21,20 @@ export const searchBy = (arr: any, itemId: number, key: string) => {
     if (item.id === itemId) return item;
     if (item[key]) return searchBy(item[key], itemId, key);
   }, null);
+};
+
+// TODO use ipfs configuration ???
+export const IPFS_PREFIX_URL = 'https://ipfs.io/ipfs/';
+
+export const ipfsToUrl = (ipfs: string): string => {
+  const preIpfs = ipfs.slice(7);
+  return `${IPFS_PREFIX_URL}${preIpfs}`;
+};
+
+export const getUrl = (asset: IAsset): string => {
+  let url = asset.asset?.metadata?.artifactUri;
+  if (url.startsWith('ipfs://')) {
+    url = ipfsToUrl(url);
+  }
+  return url;
 };

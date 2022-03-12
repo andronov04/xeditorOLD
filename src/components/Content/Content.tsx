@@ -1,7 +1,7 @@
 import type { Component } from 'solid-js';
 import { For, onMount } from 'solid-js';
 import { useStore } from '../../store';
-import { deepCopy } from '../../utils';
+import { deepCopy, getUrl } from '../../utils';
 import { MESSAGE_SEND_TO_DATA } from '../../constants';
 
 const DEFAULT_WIDTH = 400;
@@ -16,8 +16,11 @@ const Content: Component = () => {
 
   return (
     <section class={'absolute w-full h-full z-10 flex justify-center items-center'}>
-      <For each={state.assets} fallback={<p>Loading...</p>}>
+      <For each={state.assets.sort((a, b) => b.order - a.order)} fallback={<p>Loading...</p>}>
         {(asset) => {
+          // console.log('asset', asset);
+          const initRequestId = `initial_${asset?.asset?.id}`;
+          const url = getUrl(asset);
           if (!asset.data) {
             // Only once
             window.addEventListener(
@@ -28,14 +31,13 @@ const Content: Component = () => {
                     // TODO Why?
                     state.updateAsset({ ...asset, data: { ...asset.data, values: event.data.data.values } });
                   } else if (event.data.data) {
-                    state.updateAsset({ ...asset, data: event.data.data });
+                    state.updateAsset({ ...asset, data: event.data.data, requestId: initRequestId });
                   }
                 }
               },
               false
             );
           }
-          console.log('asset: ', asset);
 
           return (
             <div
@@ -45,11 +47,11 @@ const Content: Component = () => {
               }}
               class={'iframe_container'}
             >
-              {asset.url ? (
+              {url ? (
                 <iframe
                   width={'100%'}
                   height={'100%'}
-                  src={`${asset.url}?editor=1&data=${asset.data ? 1 : 0}${asset.hash ? `&test=${asset.hash}` : ''}`}
+                  src={`${url}?editor=1&data=${asset.data ? 1 : 0}&requestId=${asset.requestId ?? 'initial'}`}
                   class={'iframe'}
                   onLoad={(e) => {
                     // TODO Patch store
@@ -65,10 +67,9 @@ const Content: Component = () => {
                           type: 'X_SEND_DATA',
                           data: deepCopy(asset.data)
                         },
-                        asset.url
+                        url
                       );
                     }
-                    // console.log('load frame')
                   }}
                   sandbox={'allow-same-origin allow-scripts'}
                 />

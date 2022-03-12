@@ -31,24 +31,32 @@ export interface IAssetData {
 }
 
 export interface IAssetBase {
+  id: number;
   name: string;
+  metadata?: any;
+}
+export interface IAssetMeta {
+  digest: string;
+  hash: string;
 }
 
 export interface IAsset {
-  url: string;
   data?: IAssetData;
-  hash?: string;
   asset?: IAssetBase;
+  order: number;
+  meta?: IAssetMeta;
+  requestId?: string; // temp
 }
 
 export interface IState {
   assets: IAsset[];
   setAssets: (assets: IAsset[]) => void;
-  updateAsset: (assets: IAsset) => void;
+  updateAsset: (asset: IAsset) => void;
+  updateAssetMeta: (url: string, meta: IAssetMeta) => void;
   updateAssetParams: (keys: string[], params: any) => void;
 
   activeNodeId: number;
   setActiveNodeId: (id: number) => void;
 
-  generate: () => void;
+  generate: (requestId: string) => void;
 }
