@@ -24,7 +24,7 @@ export const searchBy = (arr: any, itemId: number, key: string) => {
 };
 
 // TODO use ipfs configuration ???
-export const IPFS_PREFIX_URL = 'https://ipfs.io/ipfs/';
+export const IPFS_PREFIX_URL = 'https://art3s.mypinata.cloud/ipfs/'; // 'https://ipfs.io/ipfs/';
 
 export const ipfsToUrl = (ipfs: string): string => {
   const preIpfs = ipfs.slice(7);
@@ -37,4 +37,8 @@ export const getUrl = (asset: IAsset): string => {
     url = ipfsToUrl(url);
   }
   return url;
+};
+
+export const postData = (type: string, requestId: string, data: any): void => {
+  window.parent.window.postMessage({ type, requestId, data }, document.referrer);
 };

@@ -2,7 +2,7 @@ import type { Component } from 'solid-js';
 import { For, onMount } from 'solid-js';
 import { useStore } from '../../store';
 import { deepCopy, getUrl } from '../../utils';
-import { MESSAGE_SEND_TO_DATA } from '../../constants';
+import { MESSAGE_SEND_DATA, MESSAGE_SEND_TO_DATA } from '../../constants';
 
 const DEFAULT_WIDTH = 400;
 const DEFAULT_HEIGHT = 400;
@@ -64,7 +64,8 @@ const Content: Component = () => {
                       // console.log('dictionary', dictionary);
                       e.currentTarget.contentWindow?.postMessage(
                         {
-                          type: 'X_SEND_DATA',
+                          type: MESSAGE_SEND_DATA,
+                          requestId: asset.requestId ?? 'initial',
                           data: deepCopy(asset.data)
                         },
                         url

@@ -2,9 +2,9 @@ import type { Component } from 'solid-js';
 import Main from './components/Main';
 import { onMount } from 'solid-js';
 import { useStore } from './store';
-import { MESSAGE_GENERATE_NEW, MESSAGE_GET_ASSET_META, MESSAGE_GET_DIGEST, MESSAGE_SEND_ASSET } from './constants';
+import { DEV_ASSET_URL, MESSAGE_GENERATE_NEW, MESSAGE_GET_ASSET_META, MESSAGE_GET_DIGEST, MESSAGE_SEND_ASSET } from './constants';
 import { dataDigest } from './digest';
-import { deepCopy } from './utils';
+import { deepCopy, postData } from './utils';
 
 const App: Component = () => {
   const state = useStore();
@@ -29,28 +29,30 @@ const App: Component = () => {
           // console.log('data', event.data.data);
           dataDigest(deepCopy(state.assets)).then((data) => {
             // console.log('dataDigest-data', data);
-            window.parent.window.postMessage(
-              {
-                type: MESSAGE_GET_DIGEST,
-                requestId: event.data.requestId,
-                data: data
-              },
-              document.referrer
-            );
+            postData(MESSAGE_GET_DIGEST, event.data.requestId, data);
           });
         }
       },
       false
     );
-    // const test_metadata = {
-    //   name: 'Suprematism'
-    // };
-    // state.setAssets([
-    //   {
-    //     url: DEV_ASSET_URL ?? 'http://localhost:8001',
-    //     metadata: test_metadata
-    //   }
-    // ]);
+    if (DEV_ASSET_URL) {
+      setTimeout(() => {
+        const test_metadata = {
+          name: 'Suprematism',
+          artifactUri: DEV_ASSET_URL ?? 'http://localhost:8001'
+        };
+        state.setAssets([
+          {
+            asset: {
+              id: 1,
+              name: 'Style',
+              metadata: test_metadata
+            },
+            order: 1
+          }
+        ]);
+      }, 500);
+    }
   });
 
   return <Main />;
