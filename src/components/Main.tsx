@@ -6,15 +6,17 @@ import Header from './Header/Header';
 
 const Main: Component = () => {
   return (
-    <main>
+    <div className={'w-full h-full flex flex-col'}>
       <Header />
+      <main className={'relative flex-grow w-full'}>
+        <StructureSide />
 
-      <StructureSide />
+        <Content />
 
-      <Content />
-
-      <ParameterSide />
-    </main>
+        <ParameterSide />
+      </main>
+      {/*<footer className={'h-10 bg-black w-full'}>Footer</footer>*/}
+    </div>
   );
 };
 

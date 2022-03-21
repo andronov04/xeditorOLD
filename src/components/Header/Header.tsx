@@ -7,17 +7,21 @@ const Header: Component = () => {
   const state = useStore();
 
   return (
-    <header>
-      {!IS_ON_FRAME ? (
-        <button
-          onClick={() => {
-            state.generate();
-          }}
-          class={'absolute outline-0 left-1/2 transform -translate-x-1/2 hover:opacity-80 text-base cursor-pointer z-30 top-2 px-3 py-1 bg-dart2C rounded-sm'}
-        >
-          Generate
-        </button>
-      ) : null}
+    <header class={'h-10 bg-dart2C flex justify-between items-center px-2'}>
+      <div className={'w-1/3'} />
+      <div className={'w-1/3 flex justify-center'}>
+        {!IS_ON_FRAME ? (
+          <button
+            onClick={() => {
+              state.generate(Math.random().toString());
+            }}
+            class={'outline-0 select-none text-black font-semibold hover:opacity-80 text-base cursor-pointer px-3 py-1 bg-white rounded-sm'}
+          >
+            Generate
+          </button>
+        ) : null}
+      </div>
+      <div className={'w-1/3 flex justify-end'} />
     </header>
   );
 };

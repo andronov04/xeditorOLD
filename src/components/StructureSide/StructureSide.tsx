@@ -3,9 +3,7 @@ import { For } from 'solid-js';
 import { useStore } from '../../store';
 import { IAssetData } from '../../types';
 
-const MAIN_NODE_NAME = 'Node';
-
-const StructureNode = (props: { data: IAssetData; index: number; activeNodeId: number; setActiveNodeId: (id: number) => void }) => {
+const StructureNode = (props: { data: IAssetData; name?: string; index: number; activeNodeId: number; setActiveNodeId: (id: number) => void }) => {
   return (
     <div
       style={{
@@ -22,7 +20,7 @@ const StructureNode = (props: { data: IAssetData; index: number; activeNodeId: n
         id={`structure_${props.index}`}
         class={`relative cursor-pointer hover:opacity-80 ${props.activeNodeId === props.data.id ? 'font-bold' : ''}`}
       >
-        {props.data.params?.name ?? (props.index === 0 ? MAIN_NODE_NAME : `Element #${props.data.id}`)}
+        {props.data.params?.name ?? (props.index === 0 ? props.name : `Node #${props.data.id}`)}
 
         {/*{props.data.childrenCount ? <i class={'text-small absolute -top-1 ml-0.5'}>{props.data.childrenCount}</i> : null}*/}
       </h4>
@@ -39,16 +37,22 @@ const StructureNode = (props: { data: IAssetData; index: number; activeNodeId: n
 const StructureSide: Component = () => {
   const state = useStore();
   return (
-    <aside class={'p-2 absolute bg-dark21 z-20 w-250 h-full top-0 left-0'}>
+    <aside class={'p-2 select-none absolute bg-dark21 z-20 w-250 h-full top-0 left-0'}>
       <h2>Structure</h2>
 
       <div style={{ height: '95%' }} class={'text-sm pt-2 overflow-scroll'}>
+        <h2 class={'cursor-pointer hover:opacity-80'}>Design</h2>
         <For each={state.assets} fallback={<div>Loading...</div>}>
           {(asset) => (
             <div>
-              {asset.asset?.name ? <h2 class={'italic'}>{asset.asset?.name}</h2> : null}
               {asset.data?.children.length && (
-                <StructureNode activeNodeId={state.activeNodeId} data={asset.data} setActiveNodeId={state.setActiveNodeId} index={0} />
+                <StructureNode
+                  name={asset.asset?.name ?? ''}
+                  activeNodeId={state.activeNodeId}
+                  data={asset.data}
+                  setActiveNodeId={state.setActiveNodeId}
+                  index={0}
+                />
               )}
             </div>
           )}
