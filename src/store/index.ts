@@ -7,7 +7,27 @@ setAutoFreeze(false);
 
 export const useStore = create<IState>((set) => ({
   assets: [],
-  setAssets: (assets) => set((_) => ({ assets })),
+  root: {
+    id: 0,
+    childrenCount: 0,
+    children: [],
+    params: {
+      width: {
+        name: 'Width',
+        value: 1000
+      },
+      height: {
+        name: 'Height',
+        value: 1000
+      }
+    },
+    values: {
+      width: 1000,
+      height: 1000
+    }
+  },
+  updateRoot: (root) => set(() => ({ root })),
+  setAssets: (assets) => set(() => ({ assets })),
   updateAsset: (payload: IAsset) =>
     set(
       produce((state) => {
@@ -58,5 +78,8 @@ export const useStore = create<IState>((set) => ({
     }),
 
   activeNodeId: 1,
-  setActiveNodeId: (id) => set((_) => ({ activeNodeId: id }))
+  setActiveNodeId: (id) => set(() => ({ activeNodeId: id })),
+
+  scale: 1,
+  setScale: (scale) => set(() => ({ scale }))
 }));

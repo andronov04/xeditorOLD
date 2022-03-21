@@ -47,7 +47,7 @@ const ParameterSide: Component = () => {
   const state = useStore();
 
   return (
-    <aside class={'p-2 select-none absolute bg-dark21 z-20 w-250 h-full top-0 right-0'}>
+    <aside id={'right'} class={'p-2 select-none absolute bg-dark21 z-20 w-250 h-full top-0 right-0'}>
       <h2>Parameters</h2>
 
       <div style={{ height: '95%' }} class={'pt-2 text-sm overflow-scroll'}>

@@ -4,18 +4,35 @@ import { useStore } from '../../store';
 import { deepCopy, getUrl } from '../../utils';
 import { MESSAGE_SEND_DATA, MESSAGE_SEND_TO_DATA } from '../../constants';
 
-const DEFAULT_WIDTH = 400;
-const DEFAULT_HEIGHT = 400;
+const DEFAULT_WIDTH = 500;
+const DEFAULT_HEIGHT = 500;
+const DEFAULT_PADDING = 100;
 
 const Content: Component = () => {
   const state = useStore();
+  const designWidth = state.root?.values.width ?? DEFAULT_WIDTH;
+  const designHeight = state.root?.values.height ?? DEFAULT_HEIGHT;
 
   onMount(async () => {
-    /**/
+    const header = document.getElementById('header')?.getBoundingClientRect();
+    const left = document.getElementById('left')?.getBoundingClientRect();
+    const right = document.getElementById('left')?.getBoundingClientRect();
+    const container = document.getElementById('container')?.getBoundingClientRect();
+    // Calculate viewport
+    // and good scaling
+    if (header && left && right && container) {
+      const width = container.width - right.width - left.width;
+      const height = container.height - header.height;
+      const minSize = Math.min(width, height);
+      const maxSize = Math.max(designWidth, designHeight);
+      state.setScale(minSize / (maxSize + DEFAULT_PADDING));
+    }
   });
+  // width: `${asset.data?.values?.width ?? DEFAULT_WIDTH}px`,
+  // height: `${asset.data?.values?.height ?? DEFAULT_HEIGHT}px`
 
   return (
-    <section class={'absolute w-full h-full z-10 flex justify-center items-center'}>
+    <section id={'container'} class={'absolute w-full h-full z-10 flex justify-center items-center'}>
       <For each={state.assets.sort((a, b) => b.order - a.order)} fallback={<p>Loading...</p>}>
         {(asset) => {
           // console.log('asset', asset);
@@ -42,8 +59,9 @@ const Content: Component = () => {
           return (
             <div
               style={{
-                width: `${asset.data?.values?.width ?? DEFAULT_WIDTH}px`,
-                height: `${asset.data?.values?.height ?? DEFAULT_HEIGHT}px`
+                width: `${designWidth}px`,
+                height: `${designHeight}px`,
+                transform: `scale(${state.scale})`
               }}
               class={'iframe_container'}
             >

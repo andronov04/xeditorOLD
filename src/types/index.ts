@@ -22,10 +22,14 @@ export interface IValues {
   [key: string]: any;
 }
 
+export interface IBaseParams {
+  [key: string]: IParams;
+}
+
 export interface IAssetData {
   id: number;
   children: IAssetData[];
-  params: IParams;
+  params: IBaseParams;
   values: IValues;
   childrenCount: number;
 }
@@ -50,6 +54,8 @@ export interface IAsset {
 
 export interface IState {
   assets: IAsset[];
+  root?: IAssetData;
+  updateRoot: (root: IAssetData) => void;
   setAssets: (assets: IAsset[]) => void;
   updateAsset: (asset: IAsset) => void;
   updateAssetMeta: (url: string, meta: IAssetMeta) => void;
@@ -59,4 +65,7 @@ export interface IState {
   setActiveNodeId: (id: number) => void;
 
   generate: (requestId: string) => void;
+
+  scale: number;
+  setScale: (scale: number) => void;
 }

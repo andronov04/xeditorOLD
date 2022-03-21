@@ -4,6 +4,7 @@ import { useStore } from '../../store';
 import { IAssetData } from '../../types';
 
 const StructureNode = (props: { data: IAssetData; name?: string; index: number; activeNodeId: number; setActiveNodeId: (id: number) => void }) => {
+  console.log('props.data.params', props.data.params);
   return (
     <div
       style={{
@@ -37,7 +38,7 @@ const StructureNode = (props: { data: IAssetData; name?: string; index: number; 
 const StructureSide: Component = () => {
   const state = useStore();
   return (
-    <aside class={'p-2 select-none absolute bg-dark21 z-20 w-250 h-full top-0 left-0'}>
+    <aside id={'left'} class={'p-2 select-none absolute bg-dark21 z-20 w-250 h-full top-0 left-0'}>
       <h2>Structure</h2>
 
       <div style={{ height: '95%' }} class={'text-sm pt-2 overflow-scroll'}>

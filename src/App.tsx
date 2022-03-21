@@ -45,7 +45,7 @@ const App: Component = () => {
           {
             asset: {
               id: 1,
-              name: 'Style',
+              name: 'Suprematism',
               metadata: test_metadata
             },
             order: 1
