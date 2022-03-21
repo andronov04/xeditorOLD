@@ -17,7 +17,7 @@ const Parameters = (props: { data: IAssetData; keys: string[]; index: number }) 
 
   return (
     <div>
-      {props.index !== 0 && <h3>{props.data.params.name}</h3>}
+      {props.index !== 0 && <h3>{(props.data.params as unknown as IParams).name}</h3>}
       <div class={`${props.index === 0 ? '' : 'pl-2'}`}>
         {
           <For each={entries().filter((a) => !RESERVED_LIST.includes(a[0]))} fallback={<div>Loading...</div>}>

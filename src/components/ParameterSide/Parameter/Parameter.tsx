@@ -239,7 +239,7 @@ export const Parameter = (props: { keys: string[]; key: string; params: IParams;
   const key = props.key;
   const params = props.params;
   const keys = props.keys; // Parent keys
-  // const value = props.value;
+  const value = props.value;
   // console.log('k-v', key, params, value);
   // debounce update data assets params
   const setParams = debounce((params: any) => {
@@ -248,14 +248,32 @@ export const Parameter = (props: { keys: string[]; key: string; params: IParams;
 
   return (
     <div>
-      <h4 class={'relative'}>
-        {params.name ?? key}
-        {params.hint ? (
-          <div class={'absolute right-0 top-0'}>
-            <Tooltip text={params.hint} />
+      <div class={'flex justify-start items-center w-full'}>
+        <div class={'cursor-pointer hover:opacity-80 flex'}>
+          <div class="flex items-center justify-center w-full">
+            <label for={`toggle_${key}`} class="flex items-center cursor-pointer">
+              <div class="relative w-8 ">
+                <input checked={true} type="checkbox" id={`toggle_${key}`} class="sr-only input-checkbox-params" />
+                <div class="block bg-dart2C w-8 h-4 rounded-full" />
+                <div class="dot absolute left-0.5 top-0.5 bg-white w-3 h-3 rounded-full transition flex justify-center items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" height="10px" viewBox="0 0 24 24" width="10px" fill="#fff">
+                    <path d="M10.59 9.17L6.12 4.7c-.39-.39-1.02-.39-1.41 0-.39.39-.39 1.02 0 1.41l4.46 4.46 1.42-1.4zm4.76-4.32l1.19 1.19L4.7 17.88c-.39.39-.39 1.02 0 1.41.39.39 1.02.39 1.41 0L17.96 7.46l1.19 1.19c.31.31.85.09.85-.36V4.5c0-.28-.22-.5-.5-.5h-3.79c-.45 0-.67.54-.36.85zm-.52 8.56l-1.41 1.41 3.13 3.13-1.2 1.2c-.31.31-.09.85.36.85h3.79c.28 0 .5-.22.5-.5v-3.79c0-.45-.54-.67-.85-.35l-1.19 1.19-3.13-3.14z" />
+                  </svg>
+                </div>
+              </div>
+            </label>
           </div>
-        ) : null}
-      </h4>
+        </div>
+        <h4 class={'relative pl-1 text-smm flex-grow'}>
+          {/*{value}*/}
+          {params.name ?? key}
+          {params.hint ? (
+            <div class={'absolute right-0 top-0'}>
+              <Tooltip text={params.hint} />
+            </div>
+          ) : null}
+        </h4>
+      </div>
       <p class={'opacity-50 text-xs'}>{params.description}</p>
       {params.min !== undefined && params.max !== undefined && (
         <div class={'py-1'}>

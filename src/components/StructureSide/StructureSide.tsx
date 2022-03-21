@@ -1,10 +1,9 @@
 import type { Component } from 'solid-js';
 import { For } from 'solid-js';
 import { useStore } from '../../store';
-import { IAssetData } from '../../types';
+import { IAssetData, IParams } from '../../types';
 
 const StructureNode = (props: { data: IAssetData; name?: string; index: number; activeNodeId: number; setActiveNodeId: (id: number) => void }) => {
-  console.log('props.data.params', props.data.params);
   return (
     <div
       style={{
@@ -21,7 +20,7 @@ const StructureNode = (props: { data: IAssetData; name?: string; index: number; 
         id={`structure_${props.index}`}
         class={`relative cursor-pointer hover:opacity-80 ${props.activeNodeId === props.data.id ? 'font-bold' : ''}`}
       >
-        {props.data.params?.name ?? (props.index === 0 ? props.name : `Node #${props.data.id}`)}
+        {(props.data.params as unknown as IParams)?.name ?? (props.index === 0 ? props.name : `Node #${props.data.id}`)}
 
         {/*{props.data.childrenCount ? <i class={'text-small absolute -top-1 ml-0.5'}>{props.data.childrenCount}</i> : null}*/}
       </h4>
