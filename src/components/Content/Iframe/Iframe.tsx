@@ -45,7 +45,7 @@ const Iframe = (props: { asset: IAsset }) => {
           class={'iframe'}
           onLoad={(e) => {
             // TODO Patch store
-            console.log('asset-onLoad', props.asset);
+            // console.log('asset-onLoad', props.asset);
 
             if (props.asset.state) {
               e.currentTarget.contentWindow?.postMessage(

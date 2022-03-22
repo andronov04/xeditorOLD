@@ -2,7 +2,7 @@ import create from 'solid-zustand';
 import produce, { setAutoFreeze } from 'immer';
 import { random } from '@andronov04/xsdk';
 import { IAsset, IAssetMeta, IAssetState, IState } from '../types';
-import { deepCopy, getUrl } from '../utils';
+import { deepCopy, getUrl, searchBy } from '../utils';
 
 setAutoFreeze(false);
 
@@ -53,25 +53,26 @@ export const useStore = create<IState>((set) => ({
         return { assets };
       })
     ),
-  updateAssetState: (keys: string[], st: any) =>
+  updateAssetState: (keys: string[], params: any) =>
     set(
       produce((state) => {
-        // const idx = 0; // TODO use active current
-        // const assets = [...state.assets];
-        // const asset = assets[idx] as IAsset;
-        // if (asset) {
-        //   const data = searchBy([asset?.data], state.activeNodeId, 'children') as any;
-        //   Object.keys(params).forEach((k) => {
-        //     // TODO Optimization
-        //     let _params = data.params;
-        //     keys.forEach((key) => {
-        //       _params = _params[key];
-        //     });
-        //     if (_params !== undefined && _params[k] !== params[k]) {
-        //       _params[k] = params[k];
-        //     }
-        //   });
-        // }
+        // TODO Validation How to validate?
+        const idx = 0; // TODO use active current
+        const assets = [...state.assets];
+        const asset = assets[idx] as IAsset;
+        if (asset) {
+          const data = state.activeNodeId === -1 ? state.root : (searchBy([asset?.state], state.activeNodeId, 'children') as any);
+          Object.keys(params).forEach((k) => {
+            // TODO Optimization
+            let _params = data.state;
+            keys.forEach((key) => {
+              _params = _params[key];
+            });
+            if (_params !== undefined && _params[k] !== params[k]) {
+              _params[k] = params[k];
+            }
+          });
+        }
       })
     ),
 

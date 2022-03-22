@@ -239,12 +239,12 @@ export const Parameter = (props: { keys: string[]; key: string; params: IParams 
   const key = props.key;
   const params = props.params;
   const keys = props.keys; // Parent keys
-  const isGen = props.params.mode === 'gen' || !props.params.mode;
+  const isGen = createMemo(() => props.params.mode === 'gen' || !props.params.mode);
   // const value = props.value;
   // console.log('k-v', key, params, value);
   // debounce update data assets params
   const setParams = debounce((params: any) => {
-    // store.updateAssetState([...keys, key], params);
+    store.updateAssetState([...keys, key], params);
   }, 1000);
 
   return (
@@ -256,9 +256,9 @@ export const Parameter = (props: { keys: string[]; key: string; params: IParams 
               <div class="relative w-8 ">
                 <input
                   onChange={() => {
-                    // setState({ mode: state.mode === 'abs' ? 'gen' : 'abs' });
+                    store.updateAssetState([...keys, key], { mode: props.params.mode === 'abs' ? 'gen' : 'abs' });
                   }}
-                  checked={isGen}
+                  checked={isGen()}
                   type="checkbox"
                   id={`toggle_${key}`}
                   class="sr-only input-checkbox-params"
@@ -283,17 +283,17 @@ export const Parameter = (props: { keys: string[]; key: string; params: IParams 
         </h4>
       </div>
       <p class={'opacity-50 text-xs'}>{params.description}</p>
-      {!isGen && !params.array && (
+      {!isGen() && !params.array && (
         <div class={'py-1'}>
           <InputNumber
             value={params.value as number}
             setValue={(val) => {
-              // setState({ min: val });
+              setParams({ value: val });
             }}
           />
         </div>
       )}
-      {isGen && params.min !== undefined && params.max !== undefined && (
+      {isGen() && params.min !== undefined && params.max !== undefined && (
         <div class={'py-1'}>
           <InputInterval
             min={params.min}
@@ -306,7 +306,7 @@ export const Parameter = (props: { keys: string[]; key: string; params: IParams 
           />
         </div>
       )}
-      {isGen && params.array?.length && (
+      {isGen() && params.array?.length && (
         <div class={'py-1'}>
           <InputArray array={params.array} setParams={setParams} />
         </div>
