@@ -7,6 +7,8 @@ export interface IParams {
   minMin?: number;
   maxMax?: number;
 
+  mode?: 'abs' | 'gen';
+
   value?: number;
   array?: any[];
 
@@ -18,19 +20,14 @@ export interface IParams {
   hint?: string;
 }
 
-export interface IValues {
-  [key: string]: any;
-}
-
-export interface IBaseParams {
+export interface IBaseState {
   [key: string]: IParams;
 }
 
-export interface IAssetData {
+export interface IAssetState {
   id: number;
-  children: IAssetData[];
-  params: IBaseParams;
-  values: IValues;
+  children: IAssetState[];
+  state: IBaseState;
   childrenCount: number;
 }
 
@@ -45,7 +42,7 @@ export interface IAssetMeta {
 }
 
 export interface IAsset {
-  data?: IAssetData;
+  state?: IAssetState;
   asset?: IAssetBase;
   order: number;
   meta?: IAssetMeta;
@@ -54,12 +51,14 @@ export interface IAsset {
 
 export interface IState {
   assets: IAsset[];
-  root?: IAssetData;
-  updateRoot: (root: IAssetData) => void;
+
+  root: IAssetState;
+  updateRoot: (root: IAssetState) => void;
+
   setAssets: (assets: IAsset[]) => void;
   updateAsset: (asset: IAsset) => void;
   updateAssetMeta: (url: string, meta: IAssetMeta) => void;
-  updateAssetParams: (keys: string[], params: any) => void;
+  updateAssetState: (keys: string[], state: any) => void;
 
   activeNodeId: number;
   setActiveNodeId: (id: number) => void;

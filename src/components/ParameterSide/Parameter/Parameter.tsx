@@ -234,16 +234,17 @@ export const InputArray = (props: { array: any[]; setParams: (params: any) => vo
   );
 };
 
-export const Parameter = (props: { keys: string[]; key: string; params: IParams; value: any }) => {
-  const state = useStore();
+export const Parameter = (props: { keys: string[]; key: string; params: IParams }) => {
+  const [state, setState] = createStore<{ mode: 'gen' | 'abs' }>({ mode: 'gen' });
+  const store = useStore();
   const key = props.key;
   const params = props.params;
   const keys = props.keys; // Parent keys
-  const value = props.value;
+  // const value = props.value;
   // console.log('k-v', key, params, value);
   // debounce update data assets params
   const setParams = debounce((params: any) => {
-    state.updateAssetParams([...keys, key], params);
+    // store.updateAssetState([...keys, key], params);
   }, 1000);
 
   return (
@@ -253,7 +254,15 @@ export const Parameter = (props: { keys: string[]; key: string; params: IParams;
           <div class="flex items-center justify-center w-full">
             <label for={`toggle_${key}`} class="flex items-center cursor-pointer">
               <div class="relative w-8 ">
-                <input checked={true} type="checkbox" id={`toggle_${key}`} class="sr-only input-checkbox-params" />
+                <input
+                  onChange={() => {
+                    setState({ mode: state.mode === 'abs' ? 'gen' : 'abs' });
+                  }}
+                  checked={state.mode === 'gen'}
+                  type="checkbox"
+                  id={`toggle_${key}`}
+                  class="sr-only input-checkbox-params"
+                />
                 <div class="block bg-dart2C w-8 h-4 rounded-full" />
                 <div class="dot absolute left-0.5 top-0.5 bg-white w-3 h-3 rounded-full transition flex justify-center items-center">
                   <svg xmlns="http://www.w3.org/2000/svg" height="10px" viewBox="0 0 24 24" width="10px" fill="#fff">
@@ -265,7 +274,6 @@ export const Parameter = (props: { keys: string[]; key: string; params: IParams;
           </div>
         </div>
         <h4 class={'relative pl-1 text-smm flex-grow'}>
-          {/*{value}*/}
           {params.name ?? key}
           {params.hint ? (
             <div class={'absolute right-0 top-0'}>

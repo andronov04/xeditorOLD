@@ -1,29 +1,33 @@
 import create from 'solid-zustand';
 import produce, { setAutoFreeze } from 'immer';
-import { IAsset, IAssetMeta, IState } from '../types';
-import { getUrl, searchBy } from '../utils';
+import { IAsset, IAssetMeta, IAssetState, IState } from '../types';
+import { deepCopy, getUrl } from '../utils';
 
 setAutoFreeze(false);
 
 export const useStore = create<IState>((set) => ({
   assets: [],
   root: {
-    id: 0,
+    id: -1,
     childrenCount: 0,
     children: [],
-    params: {
+    state: {
       width: {
         name: 'Width',
-        value: 1000
+        value: 1000,
+        min: 500,
+        max: 1000
+        // minMin: 100,
+        // maxMax: 4000
       },
       height: {
         name: 'Height',
-        value: 1000
+        value: 1000,
+        min: 500,
+        max: 1000
+        // minMin: 100,
+        // maxMax: 4000
       }
-    },
-    values: {
-      width: 1000,
-      height: 1000
     }
   },
   updateRoot: (root) => set(() => ({ root })),
@@ -46,25 +50,25 @@ export const useStore = create<IState>((set) => ({
         return { assets };
       })
     ),
-  updateAssetParams: (keys: string[], params: any) =>
+  updateAssetState: (keys: string[], st: any) =>
     set(
       produce((state) => {
-        const idx = 0; // TODO use active current
-        const assets = [...state.assets];
-        const asset = assets[idx] as IAsset;
-        if (asset) {
-          const data = searchBy([asset?.data], state.activeNodeId, 'children') as any;
-          Object.keys(params).forEach((k) => {
-            // TODO Optimization
-            let _params = data.params;
-            keys.forEach((key) => {
-              _params = _params[key];
-            });
-            if (_params !== undefined && _params[k] !== params[k]) {
-              _params[k] = params[k];
-            }
-          });
-        }
+        // const idx = 0; // TODO use active current
+        // const assets = [...state.assets];
+        // const asset = assets[idx] as IAsset;
+        // if (asset) {
+        //   const data = searchBy([asset?.data], state.activeNodeId, 'children') as any;
+        //   Object.keys(params).forEach((k) => {
+        //     // TODO Optimization
+        //     let _params = data.params;
+        //     keys.forEach((key) => {
+        //       _params = _params[key];
+        //     });
+        //     if (_params !== undefined && _params[k] !== params[k]) {
+        //       _params[k] = params[k];
+        //     }
+        //   });
+        // }
       })
     ),
 
@@ -74,6 +78,15 @@ export const useStore = create<IState>((set) => ({
       assets.forEach((asset) => {
         asset.requestId = requestId;
       });
+      // // Test upd width/height
+      // const root: IAssetState = deepCopy(state.root);
+      // if (root?.state?.width) {
+      //   root.state.width.value = 500;
+      // }
+      // if (root?.state?.height) {
+      //   root.state.height.value = 500;
+      // }
+      // return { assets, root };
       return { assets };
     }),
 

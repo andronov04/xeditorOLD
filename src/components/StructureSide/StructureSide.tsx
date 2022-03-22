@@ -1,9 +1,9 @@
 import type { Component } from 'solid-js';
 import { For } from 'solid-js';
 import { useStore } from '../../store';
-import { IAssetData, IParams } from '../../types';
+import { IAssetState, IParams } from '../../types';
 
-const StructureNode = (props: { data: IAssetData; name?: string; index: number; activeNodeId: number; setActiveNodeId: (id: number) => void }) => {
+const StructureNode = (props: { data: IAssetState; name?: string; index: number; activeNodeId: number; setActiveNodeId: (id: number) => void }) => {
   return (
     <div
       style={{
@@ -20,7 +20,7 @@ const StructureNode = (props: { data: IAssetData; name?: string; index: number; 
         id={`structure_${props.index}`}
         class={`relative cursor-pointer hover:opacity-80 ${props.activeNodeId === props.data.id ? 'font-bold' : ''}`}
       >
-        {(props.data.params as unknown as IParams)?.name ?? (props.index === 0 ? props.name : `Node #${props.data.id}`)}
+        {(props.data.state as unknown as IParams)?.name ?? (props.index === 0 ? props.name : `Node #${props.data.id}`)}
 
         {/*{props.data.childrenCount ? <i class={'text-small absolute -top-1 ml-0.5'}>{props.data.childrenCount}</i> : null}*/}
       </h4>
@@ -41,15 +41,22 @@ const StructureSide: Component = () => {
       <h2>Structure</h2>
 
       <div style={{ height: '95%' }} class={'text-sm pt-2 overflow-scroll'}>
-        <h2 class={'cursor-pointer hover:opacity-80'}>Design</h2>
+        <h2
+          onClick={() => {
+            state.setActiveNodeId(-1);
+          }}
+          class={`cursor-pointer hover:opacity-80 ${state.activeNodeId === -1 ? 'font-bold' : ''}`}
+        >
+          Design
+        </h2>
         <For each={state.assets} fallback={<div>Loading...</div>}>
           {(asset) => (
             <div>
-              {asset.data?.children.length && (
+              {asset.state?.children.length && (
                 <StructureNode
                   name={asset.asset?.name ?? ''}
                   activeNodeId={state.activeNodeId}
-                  data={asset.data}
+                  data={asset.state}
                   setActiveNodeId={state.setActiveNodeId}
                   index={0}
                 />
