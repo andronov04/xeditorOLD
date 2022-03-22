@@ -15,7 +15,7 @@ export const InputNumber = (props: { value: number; min?: number; max?: number; 
       type={'number'}
       min={props.min ?? Infinity}
       max={props.max ?? Infinity}
-      class={'bg-dark52 w-8 outline-none rounded-sm p-1 text-xs text-white'}
+      class={'bg-dark52 w-8 outline-none rounded-sm p-1 text-xsss text-white'}
       value={props.value}
       onKeyUp={(e) => {
         props.setValue(parseInt(e.currentTarget?.value));
@@ -235,11 +235,11 @@ export const InputArray = (props: { array: any[]; setParams: (params: any) => vo
 };
 
 export const Parameter = (props: { keys: string[]; key: string; params: IParams }) => {
-  const [state, setState] = createStore<{ mode: 'gen' | 'abs' }>({ mode: 'gen' });
   const store = useStore();
   const key = props.key;
   const params = props.params;
   const keys = props.keys; // Parent keys
+  const isGen = props.params.mode === 'gen' || !props.params.mode;
   // const value = props.value;
   // console.log('k-v', key, params, value);
   // debounce update data assets params
@@ -256,9 +256,9 @@ export const Parameter = (props: { keys: string[]; key: string; params: IParams 
               <div class="relative w-8 ">
                 <input
                   onChange={() => {
-                    setState({ mode: state.mode === 'abs' ? 'gen' : 'abs' });
+                    // setState({ mode: state.mode === 'abs' ? 'gen' : 'abs' });
                   }}
-                  checked={state.mode === 'gen'}
+                  checked={isGen}
                   type="checkbox"
                   id={`toggle_${key}`}
                   class="sr-only input-checkbox-params"
@@ -283,7 +283,17 @@ export const Parameter = (props: { keys: string[]; key: string; params: IParams 
         </h4>
       </div>
       <p class={'opacity-50 text-xs'}>{params.description}</p>
-      {params.min !== undefined && params.max !== undefined && (
+      {!isGen && !params.array && (
+        <div class={'py-1'}>
+          <InputNumber
+            value={params.value as number}
+            setValue={(val) => {
+              // setState({ min: val });
+            }}
+          />
+        </div>
+      )}
+      {isGen && params.min !== undefined && params.max !== undefined && (
         <div class={'py-1'}>
           <InputInterval
             min={params.min}
@@ -296,7 +306,7 @@ export const Parameter = (props: { keys: string[]; key: string; params: IParams 
           />
         </div>
       )}
-      {params.array?.length && (
+      {isGen && params.array?.length && (
         <div class={'py-1'}>
           <InputArray array={params.array} setParams={setParams} />
         </div>

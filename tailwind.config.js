@@ -19,6 +19,12 @@ module.exports = {
             lineHeight: '1rem'
           }
         ],
+        xsss: [
+          '0.58rem',
+          {
+            lineHeight: '1rem'
+          }
+        ],
         xss: [
           '0.65rem',
           {
