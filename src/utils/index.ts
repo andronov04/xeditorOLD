@@ -1,7 +1,7 @@
 // TODO Import from sdk
 import { IAsset } from '../types';
 
-export const RESERVED_LIST = ['min', 'mode', 'max', 'value', 'step', 'node', 'name', 'description', 'hint', 'options', 'floor', 'array', 'options'];
+export const RESERVED_LIST = ['min', 'mode', 'type', 'max', 'value', 'step', 'node', 'name', 'description', 'hint', 'options', 'floor', 'array', 'options'];
 
 export const clamp = (x: number, min: number, max: number) => (x > max ? max : x < min ? min : x);
 

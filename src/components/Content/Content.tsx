@@ -1,7 +1,7 @@
 import type { Component } from 'solid-js';
 import { createEffect, For, onMount } from 'solid-js';
 import { useStore } from '../../store';
-import Iframe from './Iframe/Iframe';
+import ContentIframe from './ContentIframe/ContentIframe';
 import { IState } from '../../types';
 import shallow from 'zustand/shallow';
 
@@ -24,6 +24,8 @@ const Content: Component = () => {
       const width = container.width - right.width - left.width;
       const height = container.height - header.height;
       const minSize = Math.min(width, height);
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       const maxSize = Math.max(designWidth, designHeight);
       const scale = minSize / (maxSize + DEFAULT_PADDING);
       store.setScale(scale);
@@ -34,7 +36,7 @@ const Content: Component = () => {
     <section id={'container'} class={'absolute w-full h-full z-10 flex justify-center items-center'}>
       <For each={store.assets.sort((a, b) => b.order - a.order)} fallback={<p>Loading...</p>}>
         {(asset) => {
-          return <Iframe asset={asset} />;
+          return <ContentIframe asset={asset} />;
         }}
       </For>
     </section>

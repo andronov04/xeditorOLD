@@ -1,34 +1,5 @@
-// TODO Import IParams from sdk
-export interface IParams {
-  name: string;
-
-  min?: number;
-  max?: number;
-  minMin?: number;
-  maxMax?: number;
-
-  mode?: 'abs' | 'gen';
-
-  value?: number;
-  array?: any[];
-
-  floor?: boolean;
-
-  nodeId?: string;
-
-  description?: string;
-  hint?: string;
-}
-
-export interface IBaseState {
-  [key: string]: IParams;
-}
-
 export interface IAssetState {
-  id: number;
-  children: IAssetState[];
-  state: IBaseState;
-  childrenCount: number;
+  [key: string]: any;
 }
 
 export interface IAssetBase {
@@ -36,34 +7,27 @@ export interface IAssetBase {
   name: string;
   metadata?: any;
 }
-export interface IAssetMeta {
-  digest: string;
-  hash: string;
+
+export interface IAssetProxy {
+  asset: () => WindowProxy | null;
+  node: () => WindowProxy | null;
+  param: () => WindowProxy | null;
 }
 
 export interface IAsset {
   state?: IAssetState;
   asset?: IAssetBase;
+  proxies?: IAssetProxy;
   order: number;
-  meta?: IAssetMeta;
-  requestId?: string; // temp
 }
 
 export interface IState {
   assets: IAsset[];
-
-  root: IAssetState;
-  updateRoot: (root: IAssetState) => void;
-
   setAssets: (assets: IAsset[]) => void;
-  updateAsset: (asset: IAsset) => void;
-  updateAssetMeta: (url: string, meta: IAssetMeta) => void;
-  updateAssetState: (keys: string[], state: any) => void;
+  updateAssetProxy: (id: number, kind: 'node' | 'param' | 'asset', proxy: WindowProxy) => void;
 
-  activeNodeId: number;
-  setActiveNodeId: (id: number) => void;
-
-  generate: (requestId: string) => void;
+  root: any;
+  updateRoot: (root: any) => void;
 
   scale: number;
   setScale: (scale: number) => void;
