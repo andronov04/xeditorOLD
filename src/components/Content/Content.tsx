@@ -1,9 +1,7 @@
 import type { Component } from 'solid-js';
-import { createEffect, For, onMount } from 'solid-js';
+import { createEffect, For } from 'solid-js';
 import { useStore } from '../../store';
 import ContentIframe from './ContentIframe/ContentIframe';
-import { IState } from '../../types';
-import shallow from 'zustand/shallow';
 
 const DEFAULT_WIDTH = 500;
 const DEFAULT_HEIGHT = 500;

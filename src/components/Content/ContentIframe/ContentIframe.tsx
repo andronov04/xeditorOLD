@@ -7,7 +7,7 @@ const ContentIframe = (props: { asset: IAsset }) => {
   const store = useStore();
   const url = getUrl(props.asset);
 
-  //{props.asset['requestId'] ?? 'initial'
+  //
   return (
     <div
       style={{
@@ -19,7 +19,7 @@ const ContentIframe = (props: { asset: IAsset }) => {
     >
       {url ? (
         <Iframe
-          url={`${url}?editor=1&data=${props.asset.state ? 1 : 0}&requestId=initial`}
+          url={`${url}?editor=1&view=3&data=${props.asset.state ? 1 : 0}&requestId=initial`}
           onLoad={(proxy) => {
             store.updateAssetProxy(props.asset.asset?.id ?? 0, 'asset', proxy);
           }}

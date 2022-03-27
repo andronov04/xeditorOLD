@@ -5,7 +5,7 @@ import { For } from 'solid-js';
 
 const ParameterSide: Component = () => {
   const store = useStore();
-  const url = 'http://localhost:8001/?node=0&view=1&xhash=x014fCd6F6a11B0cCd3E6DC6BFc322e4E8a6b916bFBbFcDfa5dd4c5'; //editor=1
+  const url = 'http://localhost:8001/?node=0&editor=1&view=1&xhash=x014fCd6F6a11B0cCd3E6DC6BFc322e4E8a6b916bFBbFcDfa5dd4c5'; //editor=1
 
   return (
     <aside id={'right'} class={'p-2 select-none absolute bg-dark21 z-20 w-250 h-full top-0 right-0'}>
