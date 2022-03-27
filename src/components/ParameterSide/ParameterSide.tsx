@@ -8,10 +8,10 @@ const ParameterSide: Component = () => {
   const store = useStore();
 
   return (
-    <aside id={'right'} class={'p-2 select-none absolute bg-dark21 z-20 w-250 h-full top-0 right-0'}>
-      <h2>Parameters</h2>
+    <aside id={'right'} class={'select-none absolute bg-dark21 z-20 w-250 h-full top-0 right-0'}>
+      {/*<h2>Parameters</h2>*/}
 
-      <div style={{ height: '95%' }} class={'pt-2 text-sm overflow-scroll'}>
+      <div style={{ height: '95%' }} class={'text-sm overflow-scroll'}>
         <For each={store.assets.sort((a, b) => b.order - a.order)} fallback={<p>Loading...</p>}>
           {(asset) => {
             const url = getUrl(asset);

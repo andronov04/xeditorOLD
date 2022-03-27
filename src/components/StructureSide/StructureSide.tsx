@@ -9,7 +9,7 @@ const StructureSide: Component = () => {
 
   return (
     <aside id={'left'} class={'p-2 select-none absolute bg-dark21 z-20 w-250 h-full top-0 left-0'}>
-      <h2>Structure</h2>
+      {/*<h2>Structure</h2>*/}
 
       <div style={{ height: '95%' }} class={'text-sm pt-2 overflow-scroll'}>
         <h2
