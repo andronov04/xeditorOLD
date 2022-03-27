@@ -1,6 +1,7 @@
 import type { Component } from 'solid-js';
 import { useStore } from '../../store';
 import { USE_GENERATE } from '../../constants';
+import { getUrl } from '../../utils';
 
 const IS_ON_FRAME = window.parent !== window;
 
@@ -16,7 +17,7 @@ const Header: Component = () => {
             onClick={() => {
               // state.generate(Math.random().toString());
               // TODO Use correct asset
-              store.assets[0]?.proxies?.asset()?.postMessage({ type: USE_GENERATE }, 'http://localhost:8001');
+              store.assets[0]?.proxies?.asset()?.postMessage({ type: USE_GENERATE }, getUrl(store.assets[0]));
             }}
             class={'outline-0 select-none text-black font-semibold hover:opacity-80 text-sm cursor-pointer px-2 py-0.5 bg-white rounded-sm'}
           >

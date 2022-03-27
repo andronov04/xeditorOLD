@@ -2,13 +2,7 @@ import type { Component } from 'solid-js';
 import Main from './components/Main';
 import { onMount } from 'solid-js';
 import { useStore } from './store';
-import {
-  DEV_ASSET_URL,
-  USE_ADD_NODE_STATE,
-  USE_ADD_PARAM_STATE,
-  USE_CHANGE_PARAM_STATE,
-  USE_REQUEST_CHANGE_NODE_CMD
-} from './constants';
+import { DEV_ASSET_URL, USE_ADD_NODE_STATE, USE_ADD_PARAM_STATE, USE_CHANGE_PARAM_STATE, USE_REQUEST_CHANGE_NODE_CMD } from './constants';
 import { dataDigest } from './digest';
 import { deepCopy, postData } from './utils';
 
@@ -21,21 +15,22 @@ const App: Component = () => {
       (event) => {
         if (event.data.type === USE_CHANGE_PARAM_STATE) {
           // TODO Use correct asset
-          store.assets[0]?.proxies?.asset()?.postMessage(event.data, 'http://localhost:8001');
+          // console.log('USE_CHANGE_PARAM_STATE:::', event.data);
+          store.assets[0]?.proxies?.asset()?.postMessage(event.data, event.origin);
         }
         if (event.data.type === USE_ADD_NODE_STATE) {
           // console.log('EDITOR:::', event.data);
           // TODO Use correct asset
-          store.assets[0]?.proxies?.node()?.postMessage(event.data, 'http://localhost:8001');
-          store.assets[0]?.proxies?.param()?.postMessage(event.data, 'http://localhost:8001');
+          store.assets[0]?.proxies?.node()?.postMessage(event.data, event.origin);
+          store.assets[0]?.proxies?.param()?.postMessage(event.data, event.origin);
         }
         if (event.data.type === USE_ADD_PARAM_STATE) {
           // TODO Use correct asset
-          store.assets[0]?.proxies?.param()?.postMessage(event.data, 'http://localhost:8001');
+          store.assets[0]?.proxies?.param()?.postMessage(event.data, event.origin);
         }
         if (event.data.type === USE_REQUEST_CHANGE_NODE_CMD) {
           // TODO Use correct asset
-          store.assets[0]?.proxies?.param()?.postMessage(event.data, 'http://localhost:8001');
+          store.assets[0]?.proxies?.param()?.postMessage(event.data, event.origin);
         }
         // if (event.data?.type === MESSAGE_SEND_ASSET) {
         //   state.setAssets(event.data.data);
