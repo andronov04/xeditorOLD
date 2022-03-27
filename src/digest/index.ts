@@ -1,4 +1,4 @@
-import { digest } from '@andronov04/xsdk';
+import { digest, RESERVED_LIST } from '@andronov04/xsdk';
 import { IAsset } from '../types';
 
 interface IDigestPayloadValues {
@@ -18,27 +18,41 @@ interface IDigestData {
   digest: string;
 }
 
-const recursiveValues = (items: any, indices: number[], values: IDigestPayloadValues) => {
-  // TODO Fast decision, need rewrite
-  Object.entries(items.values ?? {}).forEach((entry) => {
-    const key = `${indices.join('.')}.${entry[0]}`;
-    values[key] = entry[1] as string | number;
-  });
-  items.children.forEach((child: any, i: number) => {
-    recursiveValues(child, [...indices, i], values);
-  });
+// TODO Use from sdk
+const getValues = (state = {}): IDigestPayloadValues => {
+  let values: any = {};
+  const cb = (data: any, val: any = {}) => {
+    Object.entries(data).forEach((entry: [string, any]) => {
+      if (RESERVED_LIST.includes(entry[0])) {
+        return;
+      }
+      if (entry[1].value !== undefined) {
+        val[entry[0]] = entry[1].value;
+      } else if (typeof entry[1] === 'number') {
+        val[entry[0]] = entry[1];
+      } else {
+        val[entry[0]] = {};
+        cb(entry[1], val[entry[0]]);
+      }
+      values = { ...values, val };
+    });
+  };
+  cb(state, {});
+  values = { ...values.val };
+
+  return values;
 };
 
 export const dataDigest = async (assets: IAsset[]): Promise<IDigestData> => {
   const payload: IDigestPayload[] = assets
     .sort((a, b) => a.order - b.order)
     .map((asset) => {
-      const values: IDigestPayloadValues = {};
-      recursiveValues(asset.data, [0], values);
+      const values: IDigestPayloadValues = getValues(asset.state);
+      // recursiveValues(asset.state, [0], values);
       return {
         id: asset.asset?.id ?? 0,
         order: asset.order,
-        values: values, // TODO Values is bad in array, remove hind desc and others
+        values: values,
         digest: asset.meta?.digest ?? '',
         hash: asset.meta?.hash ?? ''
       };
