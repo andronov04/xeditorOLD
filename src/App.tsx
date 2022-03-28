@@ -2,7 +2,14 @@ import type { Component } from 'solid-js';
 import Main from './components/Main';
 import { onMount } from 'solid-js';
 import { useStore } from './store';
-import { DEV_ASSET_URL, USE_ADD_NODE_STATE, USE_ADD_PARAM_STATE, USE_CHANGE_PARAM_STATE, USE_REQUEST_CHANGE_NODE_CMD } from './constants';
+import {
+  DEV_ASSET_URL,
+  USE_ADD_NODE_STATE,
+  USE_ADD_PARAM_STATE,
+  USE_CHANGE_PARAM_STATE,
+  USE_COMPLETE_CAPTURE,
+  USE_REQUEST_CHANGE_NODE_CMD
+} from './constants';
 import { dataDigest } from './digest';
 import { deepCopy, getUrl, postData } from './utils';
 
@@ -13,6 +20,10 @@ const App: Component = () => {
     window.addEventListener(
       'message',
       (event) => {
+        if (event.data.type === USE_COMPLETE_CAPTURE) {
+          // send to web3, parent
+          console.log('USE_COMPLETE_CAPTURE::', event.data);
+        }
         if (event.data.type === USE_CHANGE_PARAM_STATE) {
           // TODO Use correct asset
           // console.log('USE_CHANGE_PARAM_STATE:::', event.data);

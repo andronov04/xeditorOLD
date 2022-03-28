@@ -2,7 +2,7 @@ import create from 'solid-zustand';
 import produce, { setAutoFreeze } from 'immer';
 import { IAsset, IState } from '../types';
 import { getUrl } from '../utils';
-import { USE_GENERATE, USE_REPEAT } from '../constants';
+import { USE_GENERATE, USE_REPEAT, USE_REQUEST_CAPTURE } from '../constants';
 import { random } from '@andronov04/xsdk';
 
 setAutoFreeze(false);
@@ -32,7 +32,7 @@ export const useStore = create<IState>((set) => ({
     active: true,
     state: {
       size: {
-        mode: 'rnd',
+        mode: 'abs',
         unit: 'px',
         name: 'Size',
         select: [
@@ -105,6 +105,15 @@ export const useStore = create<IState>((set) => ({
       produce((state) => {
         state.assets.forEach((asset: IAsset) => {
           asset.proxies?.asset()?.postMessage({ type: USE_REPEAT }, getUrl(asset));
+        });
+      })
+    ),
+  capture: () =>
+    set(
+      produce((state) => {
+        // TODO handle return and upload ipfs
+        state.assets.forEach((asset: IAsset) => {
+          asset.proxies?.asset()?.postMessage({ type: USE_REQUEST_CAPTURE }, getUrl(asset));
         });
       })
     )
