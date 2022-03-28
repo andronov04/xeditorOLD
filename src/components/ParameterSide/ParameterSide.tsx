@@ -42,7 +42,13 @@ const Parameter = (props: { item: any; key: string }) => {
       active: mode() === 'tmpl',
       code: 'tmpl',
       onChange: () => {
-        const _item = { ...item(), mode: 'tmpl' };
+        // TODO Change on default and now active
+        // const _extend = {
+        //   ...item().extend,
+        //   width: { ...item().extend.width, value: 1080 },
+        //   height: { ...item().extend.height, value: 792 }
+        // };
+        const _item = { ...item(), mode: 'tmpl', extend: { ...item().extend } };
         const _root = { ...store.root, state: { ...store.root.state, [props.key]: { ...store.root[props.key], ..._item } } };
         store.updateRoot(_root);
       }

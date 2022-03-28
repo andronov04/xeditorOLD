@@ -3,6 +3,7 @@ import produce, { setAutoFreeze } from 'immer';
 import { IAsset, IState } from '../types';
 import { getUrl } from '../utils';
 import { USE_GENERATE, USE_REPEAT } from '../constants';
+import { random } from '@andronov04/xsdk';
 
 setAutoFreeze(false);
 const PROXIES: { [key: string]: WindowProxy } = {};
@@ -86,18 +87,25 @@ export const useStore = create<IState>((set) => ({
   generate: () =>
     set(
       produce((state) => {
-        console.log('generate');
-        // TODO Generate or get width and height
-        // TODO Use correct asset
-        state.assets[0]?.proxies?.asset()?.postMessage({ type: USE_GENERATE }, getUrl(state.assets[0]));
+        // New size if random set
+        if (state.root.state.size.mode === 'rnd') {
+          const width = random.betweenInt(state.root.state.size.extend.width.min, state.root.state.size.extend.width.max);
+          const height = random.betweenInt(state.root.state.size.extend.height.min, state.root.state.size.extend.height.max);
+          state.root.state.size.extend.width.value = width;
+          state.root.state.size.extend.height.value = height;
+        }
+
+        state.assets.forEach((asset: IAsset) => {
+          asset.proxies?.asset()?.postMessage({ type: USE_GENERATE }, getUrl(asset));
+        });
       })
     ),
   preview: () =>
     set(
       produce((state) => {
-        console.log('preview');
-        // TODO Use correct asset
-        state.assets[0]?.proxies?.asset()?.postMessage({ type: USE_REPEAT }, getUrl(state.assets[0]));
+        state.assets.forEach((asset: IAsset) => {
+          asset.proxies?.asset()?.postMessage({ type: USE_REPEAT }, getUrl(asset));
+        });
       })
     )
 }));
