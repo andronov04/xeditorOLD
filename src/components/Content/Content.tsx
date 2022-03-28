@@ -11,8 +11,8 @@ const Content: Component = () => {
   const store = useStore();
 
   createEffect(async () => {
-    const designWidth = store.root.state?.width?.value ?? DEFAULT_WIDTH;
-    const designHeight = store.root.state?.height?.value ?? DEFAULT_HEIGHT;
+    const designWidth = store.root.state?.size?.extend?.width?.value ?? DEFAULT_WIDTH;
+    const designHeight = store.root.state?.size?.extend?.height?.value ?? DEFAULT_HEIGHT;
     const header = document.getElementById('header')?.getBoundingClientRect();
     const left = document.getElementById('left')?.getBoundingClientRect();
     const right = document.getElementById('left')?.getBoundingClientRect();
@@ -28,11 +28,11 @@ const Content: Component = () => {
       const scale = minSize / (maxSize + DEFAULT_PADDING);
       store.setScale(scale);
     }
-  }, [store.root.state.width.value, store.root.state.height.value]);
+  }, [store.root.state.size?.extend?.width.value, store.root.state.size?.extend?.height.value]);
 
   return (
     <section id={'container'} class={'absolute w-full h-full z-10 flex justify-center items-center'}>
-      <For each={store.assets.sort((a, b) => b.order - a.order)} fallback={<p>Loading...</p>}>
+      <For each={store.assets.sort((a, b) => b.order - a.order)} fallback={<div />}>
         {(asset) => {
           return <ContentIframe asset={asset} />;
         }}

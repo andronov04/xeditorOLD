@@ -1,7 +1,9 @@
 import { IFRAME_ALLOW } from '../../constants';
+import { JSX } from 'solid-js';
 
 interface IIframe {
   url: string;
+  style?: Partial<JSX.CSSProperties>;
   onLoad?: (proxy: WindowProxy) => void;
 }
 
@@ -12,10 +14,12 @@ const Iframe = (props: IIframe) => {
       height={'100%'}
       style={{
         'max-width': '100%',
-        'max-height': '100%'
+        'max-height': '100%',
+        ...props.style
       }}
       src={props.url}
       class={'iframe'}
+      id={'iframe'}
       allow={IFRAME_ALLOW}
       onLoad={(e) => {
         if (e.currentTarget.contentWindow) {

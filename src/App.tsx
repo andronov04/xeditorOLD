@@ -4,7 +4,7 @@ import { onMount } from 'solid-js';
 import { useStore } from './store';
 import { DEV_ASSET_URL, USE_ADD_NODE_STATE, USE_ADD_PARAM_STATE, USE_CHANGE_PARAM_STATE, USE_REQUEST_CHANGE_NODE_CMD } from './constants';
 import { dataDigest } from './digest';
-import { deepCopy, postData } from './utils';
+import { deepCopy, getUrl, postData } from './utils';
 
 const App: Component = () => {
   const store = useStore();
@@ -29,8 +29,11 @@ const App: Component = () => {
           store.assets[0]?.proxies?.param()?.postMessage(event.data, event.origin);
         }
         if (event.data.type === USE_REQUEST_CHANGE_NODE_CMD) {
+          const assetId = useStore.getState().assets.find((a) => a && getUrl(a)?.includes(event.origin))?.asset?.id ?? -1;
+          useStore.getState().setActiveAssetId(assetId);
           // TODO Use correct asset
           store.assets[0]?.proxies?.param()?.postMessage(event.data, event.origin);
+          store.assets[0]?.proxies?.node()?.postMessage(event.data, event.origin);
         }
         // if (event.data?.type === MESSAGE_SEND_ASSET) {
         //   state.setAssets(event.data.data);

@@ -29,6 +29,12 @@ export interface IState {
   root: any;
   updateRoot: (root: any) => void;
 
+  activeAssetId: number;
+  setActiveAssetId: (assetId: number) => void;
+
   scale: number;
   setScale: (scale: number) => void;
+
+  generate: () => void;
+  preview: () => void;
 }

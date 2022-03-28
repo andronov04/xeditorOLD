@@ -1,7 +1,5 @@
 import type { Component } from 'solid-js';
 import { useStore } from '../../store';
-import { USE_GENERATE } from '../../constants';
-import { getUrl } from '../../utils';
 
 const IS_ON_FRAME = window.parent !== window;
 
@@ -9,19 +7,23 @@ const Header: Component = () => {
   const store = useStore();
 
   return (
-    <header id={'header'} class={'h-8 bg-dart2C flex justify-between items-center'}>
+    <header id={'header'} class={'h-7 border-b border-b-dark4A bg-dart2C flex justify-between items-center'}>
       <div className={'w-1/3'} />
-      <div className={'w-1/3 flex justify-center'}>
+      <div className={'w-1/3 flex gap-x-3 justify-center'}>
         {!IS_ON_FRAME ? (
           <button
-            onClick={() => {
-              // state.generate(Math.random().toString());
-              // TODO Use correct asset
-              store.assets[0]?.proxies?.asset()?.postMessage({ type: USE_GENERATE }, getUrl(store.assets[0]));
-            }}
-            class={'outline-0 select-none text-black font-semibold hover:opacity-80 text-sm cursor-pointer px-2 py-0.5 bg-white rounded-sm'}
+            onClick={store.generate}
+            class={'outline-0 select-none text-black font-400 hover:opacity-80 text-smm cursor-pointer px-1.5 py-0.5 bg-white rounded-sm'}
           >
             Generate
+          </button>
+        ) : null}
+        {!IS_ON_FRAME ? (
+          <button
+            onClick={store.preview}
+            class={'outline-0 select-none text-black font-400 hover:opacity-80 text-smm cursor-pointer px-1.5 py-0.5 bg-white rounded-sm'}
+          >
+            Repeat
           </button>
         ) : null}
       </div>

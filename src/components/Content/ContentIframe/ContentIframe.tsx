@@ -6,13 +6,11 @@ import Iframe from '../../Iframe/Iframe';
 const ContentIframe = (props: { asset: IAsset }) => {
   const store = useStore();
   const url = getUrl(props.asset);
-
-  //
   return (
     <div
       style={{
-        width: `${store.root.state.width.value}px`,
-        height: `${store.root.state.height.value}px`,
+        width: `${store.root.state.size.extend.width.value}px`,
+        height: `${store.root.state.size.extend.height.value}px`,
         transform: `scale(${store.scale})`
       }}
       class={'iframe_container'}
