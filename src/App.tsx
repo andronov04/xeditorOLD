@@ -4,15 +4,19 @@ import { onMount } from 'solid-js';
 import { useStore } from './store';
 import {
   DEV_ASSET_URL,
+  RESPONSE_PREPARE,
   USE_ADD_ASSET,
   USE_ADD_NODE_STATE,
   USE_ADD_PARAM_STATE,
   USE_CHANGE_PARAM_STATE,
-  USE_COMPLETE_CAPTURE, USE_REMOVE_ASSET, USE_REQUEST_CAPTURE,
+  USE_COMPLETE_CAPTURE,
+  USE_PREPARE,
+  USE_REMOVE_ASSET,
+  USE_REQUEST_CAPTURE,
   USE_REQUEST_CHANGE_NODE_CMD
 } from './constants';
 import { dataDigest } from './digest';
-import { deepCopy, getUrl, postData } from './utils';
+import { deepCopy, digest, getUrl, postData } from './utils';
 
 const App: Component = () => {
   const store = useStore();
@@ -20,7 +24,53 @@ const App: Component = () => {
   onMount(async () => {
     window.addEventListener(
       'message',
-      (event) => {
+      async (event) => {
+        if (event.data.type === USE_PREPARE) {
+          // Get store and digest and hashes from assets;
+          // TODO WAIT ALL
+          store.assets.forEach((asset) => {
+            asset.proxies?.asset()?.postMessage(
+              {
+                type: event.data.type,
+                requestId: event.data.requestId,
+                assetId: asset.asset?.id
+              },
+              getUrl(asset)
+            );
+          });
+        }
+        if (event.data.type === RESPONSE_PREPARE) {
+          // TODO WAIT ALL
+          const response = store.assets.map((a) => {
+            return {
+              id: a.asset?.id,
+              order: a.order,
+              data: event.data.data
+            };
+          });
+
+          // TODO Check sort good
+          const state = {
+            assets: response,
+            root: {
+              width: useStore.getState().root.state.size?.extend?.width.value,
+              height: useStore.getState().root.state.size?.extend?.height.value
+            }
+          };
+          const digestId = await digest(JSON.stringify(state));
+          window.parent.window.postMessage(
+            {
+              type: event.data.type,
+              requestId: event.data.requestId,
+              data: {
+                state: state,
+                digest: digestId
+              }
+            },
+            document.referrer
+          );
+        }
+
         if (event.data.type === USE_COMPLETE_CAPTURE) {
           // send to web3, parent
           console.log('USE_COMPLETE_CAPTURE::', event.data);

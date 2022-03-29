@@ -42,3 +42,11 @@ export const getUrl = (asset: IAsset): string => {
 export const postData = (type: string, requestId: string, data: any): void => {
   window.parent.window.postMessage({ type, requestId, data }, document.referrer);
 };
+
+// TODO FROM SDK
+export const digest = async (message: string): Promise<string> => {
+  const msgUint8 = new TextEncoder().encode(message);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
+};

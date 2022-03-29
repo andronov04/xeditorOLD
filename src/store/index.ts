@@ -41,7 +41,6 @@ export const useStore = create<IState>((set) => ({
     ),
 
   root: {
-    active: true,
     state: {
       size: {
         mode: 'abs',
