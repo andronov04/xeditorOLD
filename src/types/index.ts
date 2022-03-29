@@ -23,7 +23,8 @@ export interface IAsset {
 
 export interface IState {
   assets: IAsset[];
-  setAssets: (assets: IAsset[]) => void;
+  addAsset: (asset: IAsset) => void;
+  removeAsset: (assetId: number) => void;
   updateAssetProxy: (id: number, kind: 'node' | 'param' | 'asset', proxy: WindowProxy) => void;
 
   root: any;

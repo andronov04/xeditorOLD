@@ -4,10 +4,11 @@ import { onMount } from 'solid-js';
 import { useStore } from './store';
 import {
   DEV_ASSET_URL,
+  USE_ADD_ASSET,
   USE_ADD_NODE_STATE,
   USE_ADD_PARAM_STATE,
   USE_CHANGE_PARAM_STATE,
-  USE_COMPLETE_CAPTURE,
+  USE_COMPLETE_CAPTURE, USE_REMOVE_ASSET, USE_REQUEST_CAPTURE,
   USE_REQUEST_CHANGE_NODE_CMD
 } from './constants';
 import { dataDigest } from './digest';
@@ -46,6 +47,18 @@ const App: Component = () => {
           store.assets[0]?.proxies?.param()?.postMessage(event.data, event.origin);
           store.assets[0]?.proxies?.node()?.postMessage(event.data, event.origin);
         }
+        if (event.data?.type === USE_ADD_ASSET) {
+          // Add Asset
+          const asset = {
+            asset: event.data.data,
+            order: 1
+          };
+          store.addAsset(asset);
+        }
+        if (event.data?.type === USE_REMOVE_ASSET) {
+          // remove Asset
+          store.removeAsset(event.data.data.assetId);
+        }
         // if (event.data?.type === MESSAGE_SEND_ASSET) {
         //   state.setAssets(event.data.data);
         // } else if (event.data?.type === MESSAGE_GENERATE_NEW) {
@@ -74,16 +87,14 @@ const App: Component = () => {
           name: 'Suprematism',
           artifactUri: DEV_ASSET_URL ?? 'http://localhost:8001'
         };
-        store.setAssets([
-          {
-            asset: {
-              id: 1,
-              name: 'Suprematism',
-              metadata: test_metadata
-            },
-            order: 1
-          }
-        ]);
+        store.addAsset({
+          asset: {
+            id: 1,
+            name: 'Suprematism',
+            metadata: test_metadata
+          },
+          order: 1
+        });
       }, 500);
     }
   });

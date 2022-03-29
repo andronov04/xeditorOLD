@@ -10,7 +10,19 @@ const PROXIES: { [key: string]: WindowProxy } = {};
 
 export const useStore = create<IState>((set) => ({
   assets: [],
-  setAssets: (assets) => set(() => ({ assets })),
+  addAsset: (asset) =>
+    set(
+      produce((state) => {
+        state.assets.push(asset);
+      })
+    ),
+  removeAsset: (assetId) =>
+    set(
+      produce((state) => {
+        const index = (state.assets as IAsset[]).findIndex((a) => a.asset?.id === assetId);
+        state.assets.splice(index, 1);
+      })
+    ),
   updateAssetProxy: (id: number, kind: 'node' | 'param' | 'asset', proxy: WindowProxy) =>
     set(
       produce((state) => {

@@ -1,6 +1,6 @@
 import type { Component } from 'solid-js';
 import { useStore } from '../../store';
-import { DEV_HEADER } from '../../constants';
+import { DEV_ASSET_URL, DEV_HEADER } from '../../constants';
 
 const IS_ON_FRAME = window.parent !== window;
 
@@ -27,7 +27,7 @@ const Header: Component = () => {
             Repeat
           </button>
         ) : null}
-        {!IS_ON_FRAME || DEV_HEADER ? (
+        {(!IS_ON_FRAME || DEV_HEADER) && DEV_ASSET_URL ? (
           <button
             onClick={store.capture}
             class={'outline-0 select-none text-black font-400 hover:opacity-80 text-smm cursor-pointer px-1.5 py-0.5 bg-white rounded-sm'}

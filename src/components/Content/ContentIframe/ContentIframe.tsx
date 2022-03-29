@@ -11,7 +11,7 @@ const ContentIframe = (props: { asset: IAsset }) => {
       style={{
         width: `${store.root.state.size.extend.width.value}px`,
         height: `${store.root.state.size.extend.height.value}px`,
-        transform: `scale(${store.scale})`
+        position: 'absolute'
       }}
       class={'iframe_container'}
     >

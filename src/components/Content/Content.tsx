@@ -32,11 +32,21 @@ const Content: Component = () => {
 
   return (
     <section id={'container'} class={'absolute w-full h-full z-10 flex justify-center items-center'}>
-      <For each={store.assets.sort((a, b) => b.order - a.order)} fallback={<div />}>
-        {(asset) => {
-          return <ContentIframe asset={asset} />;
+      <div
+        id={'content'}
+        style={{
+          width: `${store.root.state.size.extend.width.value}px`,
+          height: `${store.root.state.size.extend.height.value}px`,
+          transform: `scale(${store.scale})`,
+          position: 'relative'
         }}
-      </For>
+      >
+        <For each={store.assets.sort((a, b) => b.order - a.order)} fallback={<div />}>
+          {(asset) => {
+            return <ContentIframe asset={asset} />;
+          }}
+        </For>
+      </div>
     </section>
   );
 };
