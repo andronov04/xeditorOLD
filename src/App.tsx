@@ -13,7 +13,8 @@ import {
   USE_PREPARE,
   USE_REMOVE_ASSET,
   USE_REQUEST_CAPTURE,
-  USE_REQUEST_CHANGE_NODE_CMD
+  USE_REQUEST_CHANGE_NODE_CMD,
+  USE_UPDATE_HASH
 } from './constants';
 import { dataDigest } from './digest';
 import { deepCopy, digest, getUrl, postData } from './utils';
@@ -108,6 +109,11 @@ const App: Component = () => {
         if (event.data?.type === USE_REMOVE_ASSET) {
           // remove Asset
           store.removeAsset(event.data.data.assetId);
+        }
+        if (event.data?.type === USE_UPDATE_HASH) {
+          // TODO Use correct asset // USE targers
+          store.assets[0]?.proxies?.param()?.postMessage(event.data, event.origin);
+          store.assets[0]?.proxies?.node()?.postMessage(event.data, event.origin);
         }
         // if (event.data?.type === MESSAGE_SEND_ASSET) {
         //   state.setAssets(event.data.data);
