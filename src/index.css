@@ -116,8 +116,10 @@ CNTTR Style
 }
 
 .cnttr .nav > div:hover {
-  opacity: 0.8;
+  background: #35363A;
+  color: #fff;
 }
+
 
 .cnttr .nav > div.active{
   background: #000000;

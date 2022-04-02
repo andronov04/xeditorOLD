@@ -51,7 +51,10 @@ module.exports = {
         dark52: '#525252',
         darkE7: '#e7e7e7',
         dark4A: '#4A4C50',
-        dark99: '#999FA5'
+        dark99: '#999FA5',
+
+        dark29: '#292A2D',
+        dark20: '#202124'
       }
     }
   },

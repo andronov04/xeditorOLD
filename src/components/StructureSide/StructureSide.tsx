@@ -9,19 +9,21 @@ const StructureSide: Component = () => {
   const store = useStore();
 
   return (
-    <aside id={'left'} class={'border-r border-r-dark4A select-none absolute bg-dark21 z-20 w-250 h-full top-0 left-0'}>
+    <aside id={'left'} class={'border-r border-r-dark4A select-none absolute bg-dark20 z-20 w-250 h-full top-0 left-0'}>
       <div style={{ height: '95%' }} class={'p-[5px] text-sm overflow-scroll'}>
-        <h2
-          onClick={() => {
-            store.setActiveAssetId(-1);
-            // TODO Use correct asset
-            store.assets[0]?.proxies?.param()?.postMessage({ type: USE_REQUEST_CHANGE_NODE_CMD, nodeId: -1 }, getUrl(store.assets[0]));
-            store.assets[0]?.proxies?.node()?.postMessage({ type: USE_REQUEST_CHANGE_NODE_CMD, nodeId: -1 }, getUrl(store.assets[0]));
-          }}
-          class={`cursor-pointer ${store.activeAssetId === -1 ? 'font-bold' : ''} hover:opacity-80 `}
-        >
-          Design
-        </h2>
+        {store.assets.length ? (
+          <h2
+            onClick={() => {
+              store.setActiveAssetId(-1);
+              // TODO Use correct asset
+              store.assets[0]?.proxies?.param()?.postMessage({ type: USE_REQUEST_CHANGE_NODE_CMD, nodeId: -1 }, getUrl(store.assets[0]));
+              store.assets[0]?.proxies?.node()?.postMessage({ type: USE_REQUEST_CHANGE_NODE_CMD, nodeId: -1 }, getUrl(store.assets[0]));
+            }}
+            class={`cursor-pointer ${store.activeAssetId === -1 ? 'font-bold' : ''} hover:opacity-80 `}
+          >
+            Design
+          </h2>
+        ) : null}
         <div
           style={{
             // 'border-left-color': '#525252',
