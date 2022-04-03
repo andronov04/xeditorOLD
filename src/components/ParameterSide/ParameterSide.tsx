@@ -1,9 +1,10 @@
 import type { Component } from 'solid-js';
 import { useStore } from '../../store';
 import Iframe from '../Iframe/Iframe';
-import { createMemo, For, onMount } from 'solid-js';
+import { createEffect, createMemo, For, onMount } from 'solid-js';
 import { getUrl } from '../../utils';
 import { h, app } from 'hyperapp';
+import { TEMPLATE_FORMATS } from '../../constants';
 
 export const tabComponent = (props: any, nav: any[] = []): any => {
   return h(
@@ -34,79 +35,103 @@ export const inputComponent = ({ oninput, name, value }: any, inputOptions = {})
   ]);
 };
 
-const formats = [
-  {
-    label: '11x14 Poster (1008x792)',
-    value: 1
-  },
-  {
-    label: 'Instagram Post (1080x1080)',
-    value: 2
-  }
-]; // todo move
-
 const Parameter = () => {
   const store = useStore();
   let refContainer: any;
 
-  onMount(() => {
-    const state = {
-      title: 'Size',
-      helper: 'between',
-      width: 1000,
-      height: 1000,
-      min: 800,
-      max: 1200,
-      minW: 800,
-      maxW: 1200,
-      minH: 800,
-      maxH: 1200,
-      minMin: 100,
-      maxMax: 4000,
-      mode: 'abs'
-    } as any;
+  const state = {
+    title: 'Size',
+    helper: 'between',
+    width: store.root.width.value,
+    height: store.root.height.value,
+    min: 800,
+    max: 1200,
+    minW: 800,
+    maxW: 1200,
+    minH: 800,
+    maxH: 1200,
+    minMin: 100,
+    maxMax: 4000,
+    tmplIdx: store.root.tmplIdx ?? 0,
+    mode: store.root.sizeMode
+  } as any;
 
-    // IT's very bad bad, rewrite
-    const setState = (state: any, newState: any) => {
-      // console.log('setState', state, newState);
-      // if (newState.mode) {
-      //   const item = store.root.state[props.key];
-      //   const _item = { ...item, mode: newState.mode, extend: { ...item.extend } };
-      //   const _root = { ...store.root, state: { ...store.root.state, [props.key]: { ...store.root[props.key], ..._item } } };
-      //   store.updateRoot(_root);
-      // }
-      // if (newState.width) {
-      //   const item = store.root.state[props.key];
-      //   const _item = { ...item, mode: newState.mode, extend: { ...item.extend, width: { ...item.extend.width, value: newState.width } } };
-      //   const _root = { ...store.root, state: { ...store.root.state, [props.key]: { ...store.root[props.key], ..._item } } };
-      //   store.updateRoot(_root);
-      // }
-      //state:
-      // size:
-      // extend:
-      // height:
-      // max: 1000
-      // min: 500
-      // mode: "abs"
-      // name: "Height"
-      // unit: "px"
-      // value: 1000
-      // if (
-      //   const _root = { ...store.root, state: { ...store.root.state, [props.key]: { ...store.root[props.key], ..._item } } };
-      //   store.updateRoot(_root);
-      // )
-      return { ...state, ...newState };
+  const setState = (state: any, newState: any) => {
+    if (newState.tmplIdx) {
+      const format = TEMPLATE_FORMATS[newState.tmplIdx];
+      if (format) {
+        const _root = {
+          ...store.root,
+          width: { ...store.root.width, value: format.width },
+          height: { ...store.root.height, value: format.height }
+        };
+        store.updateRoot(_root);
+      }
+    }
+    if (newState.mode) {
+      const _root = { ...store.root };
+      _root.sizeMode = newState.mode;
+      store.updateRoot(_root);
+    }
+    if (newState.minW) {
+      const _root = { ...store.root, width: { ...store.root.width, min: newState.minW } };
+      store.updateRoot(_root);
+    }
+    if (newState.maxW) {
+      const _root = { ...store.root, width: { ...store.root.width, max: newState.maxW } };
+      store.updateRoot(_root);
+    }
+    if (newState.minH) {
+      const _root = { ...store.root, height: { ...store.root.height, min: newState.minH } };
+      store.updateRoot(_root);
+    }
+    if (newState.maxH) {
+      const _root = { ...store.root, height: { ...store.root.height, max: newState.maxH } };
+      store.updateRoot(_root);
+    }
+    if (newState.width) {
+      const _root = { ...store.root, width: { ...store.root.width, value: newState.width } };
+      store.updateRoot(_root);
+    }
+    if (newState.height) {
+      const _root = { ...store.root, height: { ...store.root.height, value: newState.height } };
+      store.updateRoot(_root);
+    }
+    return { ...state, ...newState };
+  };
+
+  createEffect(() => {
+    const doc = document.querySelector('#result_size');
+    if (doc) {
+      (doc as HTMLElement).innerHTML = `${store.root.width.value}x${store.root.height.value}`;
+    }
+    state.width = store.root.width.value;
+    state.height = store.root.height.value;
+    setState(state, { width: store.root.width.value, height: store.root.height.value });
+  });
+
+  const preSetState = () => {
+    return {
+      width: store.root.width.value,
+      height: store.root.height.value
     };
+  };
+
+  onMount(() => {
+    // IT's very bad bad, rewrite
 
     app({
       init: state,
-      view: ({ min, max, mode, width, height, minW, minH, maxW, maxH }: any) =>
+      view: ({ tmplIdx, mode, width, height, minW, minH, maxW, maxH }: any) =>
         h('main', { class: 'p-1' }, [
           h('h5', { innerHTML: state.title, class: 'text-sm' }),
           tabComponent(
             {
               mode,
-              onChange: (state: any, mode: any) => setState(state, { mode })
+              onChange: (state: any, mode: any) => {
+                const st = preSetState();
+                return setState(state, { mode, ...st });
+              }
             },
             [
               {
@@ -135,6 +160,8 @@ const Parameter = () => {
                         name: 'Min',
                         value: minW,
                         oninput: (state: any, event: any) => {
+                          event.preventDefault();
+                          event.stopPropagation();
                           const val = state.step ? parseFloat(event.target.value) : parseInt(event.target.value);
                           if (isNaN(val)) {
                             event.target.classList.add('input-error');
@@ -150,7 +177,7 @@ const Parameter = () => {
                           }
 
                           event.target.classList.remove('input-error');
-                          return setState(state, { minW: event.target.value });
+                          return setState(state, { minW: val });
                         }
                       },
                       {
@@ -182,6 +209,75 @@ const Parameter = () => {
 
                           event.target.classList.remove('input-error');
                           return setState(state, { maxW: val });
+                        }
+                      },
+                      {
+                        min: state.minMin,
+                        max: state.maxMax,
+                        step: state.step
+                      }
+                    )
+                  ])
+                ])
+              ]),
+              h('div', {}, [
+                h('h3', { class: 'text-xs pb-1 pt-1', innerHTML: 'Height' }),
+                h('div', { class: 'flex gap-x-2' }, [
+                  h('div', { class: 'w-1/2' }, [
+                    inputComponent(
+                      {
+                        name: 'Min',
+                        value: minH,
+                        oninput: (state: any, event: any) => {
+                          event.preventDefault();
+                          event.stopPropagation();
+                          const val = state.step ? parseFloat(event.target.value) : parseInt(event.target.value);
+                          if (isNaN(val)) {
+                            event.target.classList.add('input-error');
+                            return state;
+                          }
+                          if (val > state.maxMax) {
+                            event.target.classList.add('input-error');
+                            return state;
+                          }
+                          if (val < state.minMin) {
+                            event.target.classList.add('input-error');
+                            return state;
+                          }
+
+                          event.target.classList.remove('input-error');
+                          return setState(state, { minH: val });
+                        }
+                      },
+                      {
+                        min: state.minMin,
+                        max: state.maxMax,
+                        step: state.step
+                      }
+                    )
+                  ]),
+                  h('div', { class: 'w-1/2' }, [
+                    inputComponent(
+                      {
+                        name: 'Max',
+                        value: maxH,
+                        oninput: (state: any, event: any) => {
+                          const val = state.step ? parseFloat(event.target.value) : parseInt(event.target.value);
+                          if (isNaN(val)) {
+                            event.target.classList.add('input-error');
+                            return state;
+                          }
+                          if (val > state.maxMax) {
+                            event.target.classList.add('input-error');
+                            return state;
+                          }
+                          if (val < state.minMin) {
+                            event.target.classList.add('input-error');
+                            return state;
+                          }
+
+                          event.target.classList.remove('input-error');
+                          return setState(state, { maxH: val });
                         }
                       },
                       {
@@ -265,11 +361,29 @@ const Parameter = () => {
 
           mode === 'tmpl' &&
             h('div', { class: 'py-2' }, [
-              h('select', { class: 'select select-bordered select-xs w-full max-w-xs' }, [...formats.map((fr) => h('option', { innerHTML: fr.label }))])
+              h(
+                'select',
+                {
+                  class: 'select select-bordered select-xs w-full max-w-xs',
+                  onchange: (state, e) => {
+                    return setState(state, { tmplIdx: (e.target as HTMLSelectElement).value });
+                  }
+                },
+                [
+                  h('option', { selected: false, value: -1, innerHTML: 'Current Format' }),
+                  ...TEMPLATE_FORMATS.map((fr, i) =>
+                    h('option', {
+                      value: i,
+                      selected: i == tmplIdx,
+                      innerHTML: fr.label
+                    })
+                  )
+                ]
+              )
             ]),
 
           // result out
-          h('div', { class: 'text-xs' }, [h('h5', { class: '', innerHTML: 'Current: ' }, [h('b', { class: '', innerHTML: `${width}x${height}` })])]),
+          h('div', { class: 'text-xs' }, [h('h5', { class: '', innerHTML: 'Current: ' }, [h('b', { id: 'result_size', innerHTML: `${width}x${height}` })])]),
 
           h('div', { class: 'divider my-0' })
         ]),
@@ -284,7 +398,6 @@ const Parameter = () => {
 };
 
 const RootParameters = () => {
-  const store = useStore();
   return (
     <div style={{ color: '#999FA5' }} class={'cnttr'}>
       <Parameter />

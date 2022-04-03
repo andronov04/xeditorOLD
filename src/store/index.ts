@@ -50,13 +50,14 @@ export const useStore = create<IState>((set) => ({
 
   root: {
     sizeMode: 'abs',
+    tmplIdx: 0,
     width: {
       name: 'Width',
       value: 1000,
       unit: 'px',
       min: 500,
       max: 1000,
-      mode: 'abs'
+      mode: 'abs',
       // minMin: 100,
       // maxMax: 4000
     },
@@ -95,7 +96,7 @@ export const useStore = create<IState>((set) => ({
           const height = random.betweenInt(state.root.height.min, state.root.height.max);
           state.root.width.value = width;
           state.root.height.value = height;
-        } else if (state.root.sizeMode === 'abs') {
+        } else if (state.root.sizeMode === 'tmpl') {
           // state.root.state.size.extend.width.value = width;
           // state.root.state.size.extend.height.value = height;
         }

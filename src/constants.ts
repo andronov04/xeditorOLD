@@ -49,3 +49,42 @@ export const THEMES = [
   'coffee',
   'winter'
 ];
+
+export const TEMPLATE_FORMATS = [
+  {
+    label: 'Poster 2:3 (1600x2400)',
+    width: 1600,
+    height: 2400,
+    value: 1
+  },
+  {
+    label: 'Poster 16:9 (2048x1152)',
+    width: 2048,
+    height: 1152,
+    value: 2
+  },
+  {
+    label: 'Twitter Banner (1500x500)',
+    width: 1500,
+    height: 500,
+    value: 3
+  },
+  {
+    label: 'Twitter Post (1024x512)',
+    width: 1024,
+    height: 512,
+    value: 4
+  },
+  {
+    label: 'Instagram Post (1080x1080)',
+    width: 1080,
+    height: 1080,
+    value: 5
+  },
+  {
+    label: 'Postcard (1500x2100)',
+    width: 1500,
+    height: 2100,
+    value: 6
+  }
+];
