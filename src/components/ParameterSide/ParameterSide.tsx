@@ -1,167 +1,286 @@
 import type { Component } from 'solid-js';
 import { useStore } from '../../store';
 import Iframe from '../Iframe/Iframe';
-import { createMemo, For } from 'solid-js';
+import { createMemo, For, onMount } from 'solid-js';
 import { getUrl } from '../../utils';
+import { h, app } from 'hyperapp';
 
-interface IParameterInput {
-  value: string | number;
-  name?: string;
-  style?: any;
-}
-
-const ParameterInput = (props: IParameterInput) => {
-  return (
-    <label style={{ width: '50%', 'border-radius': '0.125rem', ...props.style }}>
-      <span>{props.name ?? 'Value'}</span>
-      <input type="number" value={props.value} />
-    </label>
+export const tabComponent = (props: any, nav: any[] = []): any => {
+  return h(
+    'div',
+    { class: 'tabs tabs-boxed w-full' },
+    nav.map((nv) =>
+      h('a', {
+        class: `tab  w-1/3 tab-xs ${nv.key === props.mode ? 'tab-active' : ''}`,
+        onclick: [props.onChange, nv.key],
+        innerHTML: nv.title
+      })
+    ) as any
   );
 };
 
+export const inputComponent = ({ oninput, name, value }: any, inputOptions = {}): any => {
+  return h('div', { class: 'form-control' }, [
+    h('label', { class: 'input-group input-group-xs' }, [
+      h('span', { class: 'px-1', innerHTML: name }),
+      h('input', {
+        class: 'input appearance-none input-bordered text-xs input-xs w-full',
+        defaultValue: value,
+        oninput,
+        type: 'number',
+        ...inputOptions
+      })
+    ])
+  ]);
+};
+
+const formats = [
+  {
+    label: '11x14 Poster (1008x792)',
+    value: 1
+  },
+  {
+    label: 'Instagram Post (1080x1080)',
+    value: 2
+  }
+]; // todo move
+
 const Parameter = (props: { item: any; key: string }) => {
   const store = useStore();
-  const item = createMemo(() => store.root.state[props.key], store.root.state[props.key]);
-  const mode = createMemo(() => item().mode, [item().mode]);
+  let refContainer: any;
 
-  const navs = [
-    {
-      key: 'random',
-      name: 'Random',
-      active: mode() === 'rnd',
-      code: 'rnd',
-      onChange: () => {
-        const _item = { ...item(), mode: 'rnd' };
-        const _root = { ...store.root, state: { ...store.root.state, [props.key]: { ...store.root[props.key], ..._item } } };
-        store.updateRoot(_root);
-      }
-    },
-    {
-      key: 'template',
-      name: 'Template',
-      active: mode() === 'tmpl',
-      code: 'tmpl',
-      onChange: () => {
-        // TODO Change on default and now active
-        // const _extend = {
-        //   ...item().extend,
-        //   width: { ...item().extend.width, value: 1080 },
-        //   height: { ...item().extend.height, value: 792 }
-        // };
-        const _item = { ...item(), mode: 'tmpl', extend: { ...item().extend } };
-        const _root = { ...store.root, state: { ...store.root.state, [props.key]: { ...store.root[props.key], ..._item } } };
-        store.updateRoot(_root);
-      }
-    },
-    {
-      key: 'absolute',
-      name: 'Absolute',
-      active: mode() === 'abs',
-      code: 'abs',
-      onChange: () => {
-        const _item = { ...item(), mode: 'abs' };
-        const _root = { ...store.root, state: { ...store.root.state, [props.key]: { ...store.root[props.key], ..._item } } };
-        store.updateRoot(_root);
-      }
-    }
-  ];
+  onMount(() => {
+    const state = {
+      title: 'Size',
+      helper: 'between',
+      width: 1000,
+      height: 1000,
+      min: 800,
+      max: 1200,
+      minW: 800,
+      maxW: 1200,
+      minH: 800,
+      maxH: 1200,
+      minMin: 100,
+      maxMax: 4000,
+      mode: 'abs'
+    } as any;
 
-  return (
-    <div className={'p-[5px] item border-b border-b-dark4A'}>
-      <header>
-        <h2>{item().name}</h2>
-        <nav className={'nav'}>
-          {navs.map((nav: any) => {
-            const active = mode() === nav.code;
-            return (
-              <>
-                <div onClick={nav.onChange} class={`nav__item ${active ? 'active' : ''}`} style="width: 50%;">
-                  {nav.name}
-                </div>
-              </>
-            );
-          })}
-        </nav>
-      </header>
-      <main>
-        <div
-          className={`${mode() === 'rnd' ? 'flex' : 'hidden'} ${
-            mode() === 'rnd' && Object.keys(item().extend ?? {}).length ? 'flex-col' : ''
-          } controls gap-y-1 active`}
-        >
-          {Object.keys(item().extend ?? {}).map((key) => (
-            <div className={'flex gap-x-4'}>
-              <ParameterInput name={`Min ${item().extend[key].name.slice(0, 1)}`} value={item().extend[key].min} />
-              <ParameterInput name={`Max ${item().extend[key].name.slice(0, 1)}`} value={item().extend[key].max} />
-            </div>
-          ))}
-        </div>
-        <div
-          className={`${mode() === 'tmpl' ? 'flex' : 'hidden'} ${
-            mode() === 'tmpl' && Object.keys(item().extend ?? {}).length ? 'flex-col' : ''
-          } controls gap-y-1 active`}
-        >
-          <select
-            style={{ display: 'block' }}
-            className="form-select form-select-sm
-      appearance-none
-      block
-      w-full
-      px-2
-      py-1
-      text-sm
-      font-normal
-      text-dark99
-      rounded-sm
-      cursor-pointer
-      transition
-      ease-in-out
-      m-0
-      focus:bg-dark41 focus:outline-none"
-            aria-label="Default select example"
-          >
-            {item().select?.map((sel: any) => (
-              <option value={`${sel.value}`}>{sel.label}</option>
-            ))}
-          </select>
-        </div>
-        <div
-          className={`${mode() === 'abs' ? 'flex' : 'hidden'} ${
-            mode() === 'abs' && Object.keys(item().extend ?? {}).length ? 'flex-col' : ''
-          } controls gap-y-1 active`}
-        >
-          {Object.keys(item().extend ?? {}).map((key) => (
-            <ParameterInput name={item().extend[key].name} value={item().extend[key].value} />
-          ))}
-        </div>
-      </main>
-      <footer
-        style={{
-          padding: '0.2rem 0rem',
-          'font-size': '0.7rem',
-          'line-height': '1rem'
-        }}
-      >
-        <span>
-          Current:{' '}
-          <b>
-            {item().extend ? (
-              <>
-                {Object.values(item().extend ?? {})
-                  .map((a: any) => a.value)
-                  .join('x')}
-              </>
-            ) : (
-              <>
-                {item().value}
-                {item().unit}
-              </>
-            )}
-          </b>
-        </span>
-      </footer>
-    </div>
-  );
+    // IT's very bad bad, rewrite
+    const setState = (state: any, newState: any) => {
+      // console.log('setState', state, newState);
+      // if (newState.mode) {
+      //   const item = store.root.state[props.key];
+      //   const _item = { ...item, mode: newState.mode, extend: { ...item.extend } };
+      //   const _root = { ...store.root, state: { ...store.root.state, [props.key]: { ...store.root[props.key], ..._item } } };
+      //   store.updateRoot(_root);
+      // }
+      // if (newState.width) {
+      //   const item = store.root.state[props.key];
+      //   const _item = { ...item, mode: newState.mode, extend: { ...item.extend, width: { ...item.extend.width, value: newState.width } } };
+      //   const _root = { ...store.root, state: { ...store.root.state, [props.key]: { ...store.root[props.key], ..._item } } };
+      //   store.updateRoot(_root);
+      // }
+      //state:
+      // size:
+      // extend:
+      // height:
+      // max: 1000
+      // min: 500
+      // mode: "abs"
+      // name: "Height"
+      // unit: "px"
+      // value: 1000
+      // if (
+      //   const _root = { ...store.root, state: { ...store.root.state, [props.key]: { ...store.root[props.key], ..._item } } };
+      //   store.updateRoot(_root);
+      // )
+      return { ...state, ...newState };
+    };
+
+    app({
+      init: state,
+      view: ({ min, max, mode, width, height, minW, minH, maxW, maxH }: any) =>
+        h('main', { class: 'p-1' }, [
+          h('h5', { innerHTML: state.title, class: 'text-sm' }),
+          tabComponent(
+            {
+              mode,
+              onChange: (state: any, mode: any) => setState(state, { mode })
+            },
+            [
+              {
+                title: 'Random',
+                key: 'rnd'
+              },
+              {
+                title: 'Template',
+                key: 'tmpl'
+              },
+              {
+                title: 'Absolute',
+                key: 'abs'
+              }
+            ]
+          ),
+
+          mode === 'rnd' &&
+            h('div', { class: 'py-2' }, [
+              h('div', {}, [
+                h('h3', { class: 'text-xs pb-1', innerHTML: 'Width' }),
+                h('div', { class: 'flex gap-x-2' }, [
+                  h('div', { class: 'w-1/2' }, [
+                    inputComponent(
+                      {
+                        name: 'Min',
+                        value: minW,
+                        oninput: (state: any, event: any) => {
+                          const val = state.step ? parseFloat(event.target.value) : parseInt(event.target.value);
+                          if (isNaN(val)) {
+                            event.target.classList.add('input-error');
+                            return state;
+                          }
+                          if (val > state.maxMax) {
+                            event.target.classList.add('input-error');
+                            return state;
+                          }
+                          if (val < state.minMin) {
+                            event.target.classList.add('input-error');
+                            return state;
+                          }
+
+                          event.target.classList.remove('input-error');
+                          return setState(state, { minW: event.target.value });
+                        }
+                      },
+                      {
+                        min: state.minMin,
+                        max: state.maxMax,
+                        step: state.step
+                      }
+                    )
+                  ]),
+                  h('div', { class: 'w-1/2' }, [
+                    inputComponent(
+                      {
+                        name: 'Max',
+                        value: maxW,
+                        oninput: (state: any, event: any) => {
+                          const val = state.step ? parseFloat(event.target.value) : parseInt(event.target.value);
+                          if (isNaN(val)) {
+                            event.target.classList.add('input-error');
+                            return state;
+                          }
+                          if (val > state.maxMax) {
+                            event.target.classList.add('input-error');
+                            return state;
+                          }
+                          if (val < state.minMin) {
+                            event.target.classList.add('input-error');
+                            return state;
+                          }
+
+                          event.target.classList.remove('input-error');
+                          return setState(state, { maxW: val });
+                        }
+                      },
+                      {
+                        min: state.minMin,
+                        max: state.maxMax,
+                        step: state.step
+                      }
+                    )
+                  ])
+                ])
+              ])
+            ]),
+
+          mode === 'abs' &&
+            h('div', { class: 'py-2' }, [
+              h('div', { class: 'flex gap-x-2' }, [
+                h('div', { class: 'w-1/2' }, [
+                  inputComponent(
+                    {
+                      name: 'Width',
+                      value: width,
+                      oninput: (state: any, event: any) => {
+                        const val = state.step ? parseFloat(event.target.value) : parseInt(event.target.value);
+                        if (isNaN(val)) {
+                          event.target.classList.add('input-error');
+                          return state;
+                        }
+                        if (val > state.maxMax) {
+                          event.target.classList.add('input-error');
+                          return state;
+                        }
+                        if (val < state.minMin) {
+                          event.target.classList.add('input-error');
+                          return state;
+                        }
+
+                        event.target.classList.remove('input-error');
+                        return setState(state, { width: val });
+                      }
+                    },
+                    {
+                      min: state.minMin,
+                      max: state.maxMax,
+                      step: state.step
+                    }
+                  )
+                ]),
+                h('div', { class: 'w-1/2' }, [
+                  inputComponent(
+                    {
+                      name: 'Height',
+                      value: height,
+                      oninput: (state: any, event: any) => {
+                        const val = state.step ? parseFloat(event.target.value) : parseInt(event.target.value);
+                        if (isNaN(val)) {
+                          event.target.classList.add('input-error');
+                          return state;
+                        }
+                        if (val > state.maxMax) {
+                          event.target.classList.add('input-error');
+                          return state;
+                        }
+                        if (val < state.minMin) {
+                          event.target.classList.add('input-error');
+                          return state;
+                        }
+
+                        event.target.classList.remove('input-error');
+                        return setState(state, { height: val });
+                      }
+                    },
+                    {
+                      min: state.minMin,
+                      max: state.maxMax,
+                      step: state.step
+                    }
+                  )
+                ])
+              ])
+            ]),
+
+          mode === 'tmpl' &&
+            h('div', { class: 'py-2' }, [
+              h('select', { class: 'select select-bordered select-xs w-full max-w-xs' }, [...formats.map((fr) => h('option', { innerHTML: fr.label }))])
+            ]),
+
+          // result out
+          h('div', { class: 'text-xs' }, [h('h5', { class: '', innerHTML: 'Current: ' }, [h('b', { class: '', innerHTML: `${width}x${height}` })])]),
+
+          h('div', { class: 'divider my-0' })
+        ]),
+      node: refContainer
+    });
+    return () => {
+      // todo destroy
+    };
+  });
+
+  return <div ref={refContainer} className={'relative'} />;
 };
 
 const RootParameters = () => {
@@ -198,7 +317,7 @@ const ParameterSide: Component = () => {
             );
           }}
         </For>
-        {/*{(store.activeAssetId === -1 && store.assets.length) ? <RootParameters /> : null}*/}
+        {store.activeAssetId === -1 && store.assets.length ? <RootParameters /> : null}
       </div>
     </aside>
   );

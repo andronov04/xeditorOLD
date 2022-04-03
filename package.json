@@ -34,6 +34,7 @@
     "solid-zustand": "^1.2.9",
     "zustand": "^3.7.1",
     "daisyui": "^2.13.5",
+    "hyperapp": "^2.0.22",
     "@andronov04/xsdk": "^0.0.2"
   }
 }

@@ -42,6 +42,7 @@ export const useStore = create<IState>((set) => ({
 
   root: {
     state: {
+      // rewrite need simple
       size: {
         mode: 'abs',
         unit: 'px',
@@ -104,6 +105,10 @@ export const useStore = create<IState>((set) => ({
           const height = random.betweenInt(state.root.state.size.extend.height.min, state.root.state.size.extend.height.max);
           state.root.state.size.extend.width.value = width;
           state.root.state.size.extend.height.value = height;
+        } else if (state.root.state.size.mode === 'abs') {
+          // state.root.state.size.extend.width.value = width;
+          // state.root.state.size.extend.height.value = height;
+          console.log('agena', state.root.state.size.extend.height.value);
         }
 
         state.assets.forEach((asset: IAsset) => {
