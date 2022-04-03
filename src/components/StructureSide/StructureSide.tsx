@@ -9,7 +9,7 @@ const StructureSide: Component = () => {
   const store = useStore();
 
   return (
-    <aside id={'left'} class={'border-r border-r-base-300 select-none absolute z-20 w-250 h-full top-0 left-0'}>
+    <aside id={'left'} class={'border-r border-r-base-300 bg-base-100 select-none absolute z-20 w-250 h-full top-0 left-0'}>
       <div style={{ height: '95%' }} class={'p-[5px] text-sm overflow-scroll'}>
         {store.assets.length ? (
           <h2

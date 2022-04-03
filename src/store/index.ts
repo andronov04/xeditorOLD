@@ -40,46 +40,35 @@ export const useStore = create<IState>((set) => ({
       })
     ),
 
+  digest: '',
+  setDigest: (digest) =>
+    set(
+      produce((state) => {
+        state.digest = digest;
+      })
+    ),
+
   root: {
-    state: {
-      // rewrite need simple
-      size: {
-        mode: 'abs',
-        unit: 'px',
-        name: 'Size',
-        select: [
-          {
-            label: '11x14 Poster (1008x792)',
-            value: 1
-          },
-          {
-            label: 'Instagram Post (1080x1080)',
-            value: 2
-          }
-        ],
-        extend: {
-          width: {
-            name: 'Width',
-            value: 1000,
-            unit: 'px',
-            min: 500,
-            max: 1000,
-            mode: 'abs'
-            // minMin: 100,
-            // maxMax: 4000
-          },
-          height: {
-            name: 'Height',
-            value: 1000,
-            unit: 'px',
-            min: 500,
-            max: 1000,
-            mode: 'abs'
-            // minMin: 100,
-            // maxMax: 4000
-          }
-        }
-      }
+    sizeMode: 'abs',
+    width: {
+      name: 'Width',
+      value: 1000,
+      unit: 'px',
+      min: 500,
+      max: 1000,
+      mode: 'abs'
+      // minMin: 100,
+      // maxMax: 4000
+    },
+    height: {
+      name: 'Height',
+      value: 1000,
+      unit: 'px',
+      min: 500,
+      max: 1000,
+      mode: 'abs'
+      // minMin: 100,
+      // maxMax: 4000
     }
   },
   updateRoot: (root: any) =>
@@ -99,16 +88,16 @@ export const useStore = create<IState>((set) => ({
   generate: () =>
     set(
       produce((state) => {
+        state.digest = '';
         // New size if random set
-        if (state.root.state.size.mode === 'rnd') {
-          const width = random.betweenInt(state.root.state.size.extend.width.min, state.root.state.size.extend.width.max);
-          const height = random.betweenInt(state.root.state.size.extend.height.min, state.root.state.size.extend.height.max);
-          state.root.state.size.extend.width.value = width;
-          state.root.state.size.extend.height.value = height;
-        } else if (state.root.state.size.mode === 'abs') {
+        if (state.root.sizeMode === 'rnd') {
+          const width = random.betweenInt(state.root.width.min, state.root.width.max);
+          const height = random.betweenInt(state.root.height.min, state.root.height.max);
+          state.root.width.value = width;
+          state.root.height.value = height;
+        } else if (state.root.sizeMode === 'abs') {
           // state.root.state.size.extend.width.value = width;
           // state.root.state.size.extend.height.value = height;
-          console.log('agena', state.root.state.size.extend.height.value);
         }
 
         state.assets.forEach((asset: IAsset) => {

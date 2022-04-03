@@ -11,8 +11,8 @@ const Content: Component = () => {
   const store = useStore();
 
   createEffect(async () => {
-    const designWidth = store.root.state?.size?.extend?.width?.value ?? DEFAULT_WIDTH;
-    const designHeight = store.root.state?.size?.extend?.height?.value ?? DEFAULT_HEIGHT;
+    const designWidth = store.root.width?.value ?? DEFAULT_WIDTH;
+    const designHeight = store.root.height?.value ?? DEFAULT_HEIGHT;
     const header = document.getElementById('header')?.getBoundingClientRect();
     const left = document.getElementById('left')?.getBoundingClientRect();
     const right = document.getElementById('left')?.getBoundingClientRect();
@@ -28,15 +28,15 @@ const Content: Component = () => {
       const scale = minSize / (maxSize + DEFAULT_PADDING);
       store.setScale(scale);
     }
-  }, [store.root.state.size?.extend?.width.value, store.root.state.size?.extend?.height.value]);
+  }, [store.root.width.value, store.root.height.value]);
 
   return (
     <section id={'container'} class={'absolute w-full h-full z-10 flex justify-center items-center'}>
       <div
         id={'content'}
         style={{
-          width: `${store.root.state.size.extend.width.value}px`,
-          height: `${store.root.state.size.extend.height.value}px`,
+          width: `${store.root.width.value}px`,
+          height: `${store.root.height.value}px`,
           transform: `scale(${store.scale})`,
           position: 'relative'
         }}

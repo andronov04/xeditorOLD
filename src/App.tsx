@@ -13,11 +13,27 @@ import {
   USE_PREPARE,
   USE_REMOVE_ASSET,
   USE_REQUEST_CAPTURE,
-  USE_REQUEST_CHANGE_NODE_CMD, USE_SET_THEME,
+  USE_REQUEST_CHANGE_NODE_CMD,
+  USE_SET_THEME,
   USE_UPDATE_HASH
 } from './constants';
-import { dataDigest } from './digest';
-import { deepCopy, digest, getUrl, postData } from './utils';
+import { debounce, deepCopy, digest, getUrl, postData } from './utils';
+import { nanoid } from 'nanoid';
+
+const setDigest = (requestId?: string) => {
+  useStore.getState().assets.forEach((asset) => {
+    asset.proxies?.asset()?.postMessage(
+      {
+        type: USE_PREPARE,
+        requestId: requestId ?? nanoid(),
+        assetId: asset.asset?.id
+      },
+      getUrl(asset)
+    );
+  });
+}
+
+const setDigestBounce = debounce(setDigest, 2000);
 
 const App: Component = () => {
   const store = useStore();
@@ -32,16 +48,17 @@ const App: Component = () => {
         if (event.data.type === USE_PREPARE) {
           // Get store and digest and hashes from assets;
           // TODO WAIT ALL
-          store.assets.forEach((asset) => {
-            asset.proxies?.asset()?.postMessage(
-              {
-                type: event.data.type,
-                requestId: event.data.requestId,
-                assetId: asset.asset?.id
-              },
-              getUrl(asset)
-            );
-          });
+          setDigest(event.data.requestId);
+          // store.assets.forEach((asset) => {
+          //   asset.proxies?.asset()?.postMessage(
+          //     {
+          //       type: event.data.type,
+          //       requestId: event.data.requestId,
+          //       assetId: asset.asset?.id
+          //     },
+          //     getUrl(asset)
+          //   );
+          // });
         }
         // if (event.data.type === USE_SET_THEME) {
         //   console.log('USE_SET_THEME::', event.data);
@@ -49,34 +66,58 @@ const App: Component = () => {
         // }
         if (event.data.type === RESPONSE_PREPARE) {
           // TODO WAIT ALL
-          const response = store.assets.map((a) => {
+          const responseValue = store.assets.map((a) => {
             return {
               id: a.asset?.id,
               order: a.order,
-              data: event.data.data
+              data: {
+                digest: event.data.data.digest,
+                hash: event.data.data.hash,
+                valueState: event.data.data.valueState
+              }
+            };
+          });
+          const responseState = store.assets.map((a) => {
+            return {
+              id: a.asset?.id,
+              order: a.order,
+              data: {
+                digest: event.data.data.digest,
+                hash: event.data.data.hash,
+                state: event.data.data.state
+              }
             };
           });
 
           // TODO Check sort good
-          const state = {
-            assets: response,
+          const valueState = {
+            assets: responseValue,
             root: {
-              width: useStore.getState().root.state.size?.extend?.width.value,
-              height: useStore.getState().root.state.size?.extend?.height.value
+              width: useStore.getState().root.width.value,
+              height: useStore.getState().root.height.value
             }
           };
-          const digestId = await digest(JSON.stringify(state));
+          const digestId = await digest(JSON.stringify(valueState));
           window.parent.window.postMessage(
             {
               type: event.data.type,
               requestId: event.data.requestId,
               data: {
-                state: state,
+                state: {
+                  assets: responseState,
+                  root: {
+                    width: useStore.getState().root.width.value,
+                    height: useStore.getState().root.height.value
+                  }
+                },
+                valueState,
                 digest: digestId
               }
             },
             document.referrer
           );
+
+          useStore.getState().setDigest(digestId);
         }
 
         if (event.data.type === USE_COMPLETE_CAPTURE) {
@@ -93,10 +134,16 @@ const App: Component = () => {
           // TODO Use correct asset
           store.assets[0]?.proxies?.node()?.postMessage(event.data, event.origin);
           store.assets[0]?.proxies?.param()?.postMessage(event.data, event.origin);
+
+          // after last get node, time get digest
+          setDigestBounce();
         }
         if (event.data.type === USE_ADD_PARAM_STATE) {
           // TODO Use correct asset
           store.assets[0]?.proxies?.param()?.postMessage(event.data, event.origin);
+
+          // after last get param, time get digest
+          setDigestBounce();
         }
         if (event.data.type === USE_REQUEST_CHANGE_NODE_CMD) {
           const assetId = useStore.getState().assets.find((a) => a && getUrl(a)?.includes(event.origin))?.asset?.id ?? -1;

@@ -6,7 +6,11 @@ const Footer: Component = () => {
   const store = useStore();
 
   return (
-    <footer id={'header'} class={'h-5 overflow-hidden border-t border-t-base-300 w-full border-b border-b-base-300 flex justify-end items-center'}>
+    <footer id={'header'} class={'px-2 h-5 overflow-hidden border-t border-t-base-300 w-full border-b border-b-base-300 flex justify-between items-center'}>
+      <div className={'text-xsss'}>
+        {!store.digest && store.assets.length ? <span class="animate-ping inline-flex h-1 w-1 rounded-full bg-primary opacity-75" /> : null}
+        {store.digest && store.assets.length ? <p>{store.digest}</p> : null}
+      </div>
       <div style={{ width: '100px' }} className={'overflow-hidden'}>
         <select
           onChange={(e) => {

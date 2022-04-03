@@ -27,6 +27,9 @@ export interface IState {
   removeAsset: (assetId: number) => void;
   updateAssetProxy: (id: number, kind: 'node' | 'param' | 'asset', proxy: WindowProxy) => void;
 
+  digest: string;
+  setDigest: (digest: string) => void;
+
   root: any;
   updateRoot: (root: any) => void;
 

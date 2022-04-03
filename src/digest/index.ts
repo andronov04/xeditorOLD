@@ -42,25 +42,26 @@ const getValues = (state = {}): IDigestPayloadValues => {
 
   return values;
 };
-
-export const dataDigest = async (assets: IAsset[]): Promise<IDigestData> => {
-  const payload: IDigestPayload[] = assets
-    .sort((a, b) => a.order - b.order)
-    .map((asset) => {
-      const values: IDigestPayloadValues = getValues(asset.state);
-      // recursiveValues(asset.state, [0], values);
-      return {
-        id: asset.asset?.id ?? 0,
-        order: asset.order,
-        values: values,
-        digest: asset.meta?.digest ?? '',
-        hash: asset.meta?.hash ?? ''
-      };
-    });
-  const data = JSON.stringify(payload);
-  const digestString = await digest(data);
-  return {
-    data,
-    digest: digestString
-  };
-};
+//
+// export const dataDigest = async (assets: IAsset[]): Promise<IDigestData> => {
+//   const payload: IDigestPayload[] = assets
+//     .sort((a, b) => a.order - b.order)
+//     .map((asset) => {
+//       const values: IDigestPayloadValues = getValues(asset.state);
+//       // recursiveValues(asset.state, [0], values);
+//       console.log('val', values);
+//       return {
+//         id: asset.asset?.id ?? 0,
+//         order: asset.order,
+//         values: values,
+//         digest: asset.meta?.digest ?? '',
+//         hash: asset.meta?.hash ?? ''
+//       };
+//     });
+//   const data = JSON.stringify(payload);
+//   const digestString = await digest(data);
+//   return {
+//     data,
+//     digest: digestString
+//   };
+// };

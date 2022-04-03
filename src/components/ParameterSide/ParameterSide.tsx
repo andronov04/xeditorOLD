@@ -45,7 +45,7 @@ const formats = [
   }
 ]; // todo move
 
-const Parameter = (props: { item: any; key: string }) => {
+const Parameter = () => {
   const store = useStore();
   let refContainer: any;
 
@@ -285,12 +285,9 @@ const Parameter = (props: { item: any; key: string }) => {
 
 const RootParameters = () => {
   const store = useStore();
-  const entries = createMemo(() => Object.entries(store.root.state), [store.root.state]);
   return (
     <div style={{ color: '#999FA5' }} class={'cnttr'}>
-      {entries().map((entry) => (
-        <Parameter key={entry[0]} item={entry[1]} />
-      ))}
+      <Parameter />
     </div>
   );
 };
@@ -299,7 +296,7 @@ const ParameterSide: Component = () => {
   const store = useStore();
 
   return (
-    <aside id={'right'} class={'border-l border-l-base-300 select-none absolute z-20 w-250 h-full top-0 right-0'}>
+    <aside id={'right'} class={'border-l border-l-base-300 bg-base-100 select-none absolute z-20 w-250 h-full top-0 right-0'}>
       <div style={{ height: '95%' }} class={'text-sm overflow-scroll'}>
         <For each={store.assets.sort((a, b) => b.order - a.order)} fallback={<div />}>
           {(asset) => {
