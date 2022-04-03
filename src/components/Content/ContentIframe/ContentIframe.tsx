@@ -20,6 +20,7 @@ const ContentIframe = (props: { asset: IAsset }) => {
           url={`${url}?editor=1&view=3&data=${props.asset.state ? 1 : 0}&requestId=initial`}
           onLoad={(proxy) => {
             store.updateAssetProxy(props.asset.asset?.id ?? 0, 'asset', proxy);
+            store.setTheme(store.theme);
           }}
         />
       ) : null}

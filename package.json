@@ -33,6 +33,7 @@
     "solid-js": "^1.3.13",
     "solid-zustand": "^1.2.9",
     "zustand": "^3.7.1",
+    "daisyui": "^2.13.5",
     "@andronov04/xsdk": "^0.0.2"
   }
 }

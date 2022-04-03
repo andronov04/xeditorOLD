@@ -2,7 +2,7 @@ import create from 'solid-zustand';
 import produce, { setAutoFreeze } from 'immer';
 import { IAsset, IState } from '../types';
 import { getUrl } from '../utils';
-import { USE_GENERATE, USE_REPEAT, USE_REQUEST_CAPTURE } from '../constants';
+import { USE_GENERATE, USE_REPEAT, USE_REQUEST_CAPTURE, USE_SET_THEME } from '../constants';
 import { random } from '@andronov04/xsdk';
 
 setAutoFreeze(false);
@@ -125,6 +125,49 @@ export const useStore = create<IState>((set) => ({
         // TODO handle return and upload ipfs
         state.assets.forEach((asset: IAsset) => {
           asset.proxies?.asset()?.postMessage({ type: USE_REQUEST_CAPTURE }, getUrl(asset));
+        });
+      })
+    ),
+
+  theme: 'dark',
+  setTheme: (theme) =>
+    set(
+      produce((state) => {
+        state.theme = theme;
+        localStorage.setItem('theme', theme);
+        // local storage save
+        const doc = document.querySelector('html');
+        if (doc) {
+          doc.dataset['theme'] = theme;
+        }
+        state.assets.forEach((asset: IAsset) => {
+          asset.proxies?.node?.()?.postMessage(
+            {
+              type: USE_SET_THEME,
+              data: {
+                theme: theme
+              }
+            },
+            getUrl(asset)
+          );
+          asset.proxies?.param?.()?.postMessage(
+            {
+              type: USE_SET_THEME,
+              data: {
+                theme: theme
+              }
+            },
+            getUrl(asset)
+          );
+          asset.proxies?.asset?.()?.postMessage(
+            {
+              type: USE_SET_THEME,
+              data: {
+                theme: theme
+              }
+            },
+            getUrl(asset)
+          );
         });
       })
     )

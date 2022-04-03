@@ -16,3 +16,36 @@ export const USE_ADD_ASSET = 'X_ADD_ASSET';
 export const USE_REMOVE_ASSET = 'X_REMOVE_ASSET';
 export const USE_PREPARE = 'X_PREPARE';
 export const RESPONSE_PREPARE = 'X_RESPONSE_PREPARE';
+export const USE_SET_THEME = 'X_USE_SET_THEME';
+
+export const THEMES = [
+  'light',
+  'dark',
+  'cupcake',
+  'bumblebee',
+  'emerald',
+  'corporate',
+  'synthwave',
+  'retro',
+  'cyberpunk',
+  'valentine',
+  'halloween',
+  'garden',
+  'forest',
+  'aqua',
+  'lofi',
+  'pastel',
+  'fantasy',
+  'wireframe',
+  'black',
+  'luxury',
+  'dracula',
+  'cmyk',
+  'autumn',
+  'business',
+  'acid',
+  'lemonade',
+  'night',
+  'coffee',
+  'winter'
+];

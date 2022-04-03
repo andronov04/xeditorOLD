@@ -13,7 +13,7 @@ import {
   USE_PREPARE,
   USE_REMOVE_ASSET,
   USE_REQUEST_CAPTURE,
-  USE_REQUEST_CHANGE_NODE_CMD,
+  USE_REQUEST_CHANGE_NODE_CMD, USE_SET_THEME,
   USE_UPDATE_HASH
 } from './constants';
 import { dataDigest } from './digest';
@@ -23,6 +23,9 @@ const App: Component = () => {
   const store = useStore();
 
   onMount(async () => {
+    const theme = localStorage.getItem('theme') ?? 'dark';
+    store.setTheme(theme);
+
     window.addEventListener(
       'message',
       async (event) => {
@@ -40,6 +43,10 @@ const App: Component = () => {
             );
           });
         }
+        // if (event.data.type === USE_SET_THEME) {
+        //   console.log('USE_SET_THEME::', event.data);
+        //   store.setTheme(event.data.data.theme);
+        // }
         if (event.data.type === RESPONSE_PREPARE) {
           // TODO WAIT ALL
           const response = store.assets.map((a) => {

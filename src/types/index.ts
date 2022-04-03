@@ -39,4 +39,7 @@ export interface IState {
   generate: () => void;
   preview: () => void;
   capture: () => void;
+
+  theme: string;
+  setTheme: (theme: string) => void;
 }

@@ -1,13 +1,9 @@
 // eslint-disable-next-line no-undef
 module.exports = {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
-  darkMode: true, // or 'media' or 'class'
+  plugins: [require('daisyui')],
+  darkMode: true,
   theme: {
-    // fontFamily: {
-    //   sans: ['Mohave', 'sans-serif'],
-    //   display: ['Mohave'],
-    //   body: ['Mohave']
-    // },
     extend: {
       padding: {
         '5px': '5px'
@@ -43,23 +39,7 @@ module.exports = {
             lineHeight: '1rem'
           }
         ]
-      },
-      colors: {
-        dart2C: '#2c2c2c',
-        dark21: '#212121',
-        dark41: '#414141',
-        dark52: '#525252',
-        darkE7: '#e7e7e7',
-        dark4A: '#4A4C50',
-        dark99: '#999FA5',
-
-        dark29: '#292A2D',
-        dark20: '#202124'
       }
     }
-  },
-  variants: {
-    extend: {}
-  },
-  plugins: []
+  }
 };

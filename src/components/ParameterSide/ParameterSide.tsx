@@ -12,7 +12,7 @@ interface IParameterInput {
 
 const ParameterInput = (props: IParameterInput) => {
   return (
-    <label className={'bg-dart2C'} style={{ width: '50%', 'border-radius': '0.125rem', ...props.style }}>
+    <label style={{ width: '50%', 'border-radius': '0.125rem', ...props.style }}>
       <span>{props.name ?? 'Value'}</span>
       <input type="number" value={props.value} />
     </label>
@@ -112,7 +112,6 @@ const Parameter = (props: { item: any; key: string }) => {
       text-sm
       font-normal
       text-dark99
-      bg-dart2C bg-clip-padding bg-no-repeat
       rounded-sm
       cursor-pointer
       transition
@@ -181,7 +180,7 @@ const ParameterSide: Component = () => {
   const store = useStore();
 
   return (
-    <aside id={'right'} class={'border-l border-l-dark4A select-none absolute bg-dark20 z-20 w-250 h-full top-0 right-0'}>
+    <aside id={'right'} class={'border-l border-l-base-300 select-none absolute z-20 w-250 h-full top-0 right-0'}>
       <div style={{ height: '95%' }} class={'text-sm overflow-scroll'}>
         <For each={store.assets.sort((a, b) => b.order - a.order)} fallback={<div />}>
           {(asset) => {
@@ -199,7 +198,7 @@ const ParameterSide: Component = () => {
             );
           }}
         </For>
-        {(store.activeAssetId === -1 && store.assets.length) ? <RootParameters /> : null}
+        {/*{(store.activeAssetId === -1 && store.assets.length) ? <RootParameters /> : null}*/}
       </div>
     </aside>
   );

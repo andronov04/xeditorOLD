@@ -3,6 +3,7 @@ import ParameterSide from './ParameterSide/ParameterSide';
 import Content from './Content/Content';
 import StructureSide from './StructureSide/StructureSide';
 import Header from './Header/Header';
+import Footer from './Footer/Footer';
 
 const Main: Component = () => {
   return (
@@ -15,7 +16,7 @@ const Main: Component = () => {
 
         <ParameterSide />
       </main>
-      {/*<footer className={'h-10 bg-black w-full'}>Footer</footer>*/}
+      <Footer />
     </div>
   );
 };
