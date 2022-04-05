@@ -1,3 +1,5 @@
+import { hash } from '@andronov04/xsdk';
+
 export interface IAssetState {
   [key: string]: any;
 }
@@ -22,6 +24,7 @@ export interface IAsset {
 }
 
 export interface IState {
+  hash: string;
   assets: IAsset[];
   addAsset: (asset: IAsset) => void;
   removeAsset: (assetId: number) => void;
@@ -45,4 +48,11 @@ export interface IState {
 
   theme: string;
   setTheme: (theme: string) => void;
+}
+
+export enum EType {
+  NONE = 0,
+  PARAMS,
+  NODES,
+  ASSET,
 }

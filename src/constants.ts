@@ -18,6 +18,12 @@ export const USE_PREPARE = 'X_PREPARE';
 export const RESPONSE_PREPARE = 'X_RESPONSE_PREPARE';
 export const USE_SET_THEME = 'X_USE_SET_THEME';
 
+// new
+export const USE_SET_NODE = 'X_USE_SET_NODE';
+export const USE_SET_PARAM = 'X_USE_SET_PARAM';
+export const USE_PROXY_TARGET = 'X_USE_PROXY_TARGET';
+export const USE_REGENERATE = 'X_USE_REGENERATE';
+
 export const THEMES = [
   'light',
   'dark',

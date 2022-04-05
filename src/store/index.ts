@@ -2,13 +2,14 @@ import create from 'solid-zustand';
 import produce, { setAutoFreeze } from 'immer';
 import { IAsset, IState } from '../types';
 import { getUrl } from '../utils';
-import { USE_GENERATE, USE_REPEAT, USE_REQUEST_CAPTURE, USE_SET_THEME } from '../constants';
-import { random } from '@andronov04/xsdk';
+import { USE_GENERATE, USE_REGENERATE, USE_REPEAT, USE_REQUEST_CAPTURE, USE_SET_THEME } from '../constants';
+import { hash, random } from '@andronov04/xsdk';
 
 setAutoFreeze(false);
 const PROXIES: { [key: string]: WindowProxy } = {};
 
 export const useStore = create<IState>((set) => ({
+  hash: '',
   assets: [],
   addAsset: (asset) =>
     set(
@@ -80,7 +81,7 @@ export const useStore = create<IState>((set) => ({
       })
     ),
 
-  activeAssetId: -1, // -1 root
+  activeAssetId: 1, //-1, // -1 root
   setActiveAssetId: (assetId) => set(() => ({ activeAssetId: assetId })),
 
   scale: 1,
@@ -90,6 +91,7 @@ export const useStore = create<IState>((set) => ({
     set(
       produce((state) => {
         state.digest = '';
+        // state.hash = hash();
         // New size if random set
         if (state.root.sizeMode === 'rnd') {
           const width = random.betweenInt(state.root.width.min, state.root.width.max);
@@ -100,17 +102,23 @@ export const useStore = create<IState>((set) => ({
           // state.root.state.size.extend.width.value = width;
           // state.root.state.size.extend.height.value = height;
         }
+        const _hash = hash();
 
         state.assets.forEach((asset: IAsset) => {
-          asset.proxies?.asset()?.postMessage({ type: USE_GENERATE }, getUrl(asset));
+          asset.proxies?.param()?.postMessage({ type: USE_REGENERATE, data: { hash: _hash } }, getUrl(asset));
+          asset.proxies?.node()?.postMessage({ type: USE_REGENERATE, data: { hash: _hash } }, getUrl(asset));
+          asset.proxies?.asset()?.postMessage({ type: USE_REGENERATE, data: { hash: _hash } }, getUrl(asset));
+          // asset.proxies?.asset()?.postMessage({ type: USE_GENERATE }, getUrl(asset));
         });
+        // after ready
+        state.hash = _hash;
       })
     ),
   preview: () =>
     set(
       produce((state) => {
         state.assets.forEach((asset: IAsset) => {
-          asset.proxies?.asset()?.postMessage({ type: USE_REPEAT }, getUrl(asset));
+          asset.proxies?.param()?.postMessage({ type: USE_REGENERATE, data: { hash: state.hash } }, getUrl(asset));
         });
       })
     ),

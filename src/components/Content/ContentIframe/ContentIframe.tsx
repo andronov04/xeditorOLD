@@ -17,7 +17,7 @@ const ContentIframe = (props: { asset: IAsset }) => {
     >
       {url ? (
         <Iframe
-          url={`${url}?editor=1&view=3&data=${props.asset.state ? 1 : 0}&requestId=initial`}
+          url={`${url}?editor=1&type=3&data=${props.asset.state ? 1 : 0}`}
           onLoad={(proxy) => {
             store.updateAssetProxy(props.asset.asset?.id ?? 0, 'asset', proxy);
             store.setTheme(store.theme);

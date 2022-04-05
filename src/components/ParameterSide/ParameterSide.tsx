@@ -419,7 +419,7 @@ const ParameterSide: Component = () => {
                 style={{
                   display: store.activeAssetId === asset.asset?.id ? 'block' : 'none'
                 }}
-                url={`${url}?node=0&editor=1&view=1&hash=x014fCd6F6a11B0cCd3E6DC6BFc322e4E8a6b916bFBbFcDfa5dd4c5`}
+                url={`${url}?node=0&editor=1&type=1&hash=x014fCd6F6a11B0cCd3E6DC6BFc322e4E8a6b916bFBbFcDfa5dd4c5`}
                 onLoad={(proxy) => {
                   store.updateAssetProxy(asset.asset?.id ?? 0, 'param', proxy);
                 }}
