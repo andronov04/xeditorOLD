@@ -37,7 +37,7 @@ export interface IState {
   updateRoot: (root: any) => void;
 
   activeAssetId: number;
-  setActiveAssetId: (assetId: number) => void;
+  setActiveAssetId: (assetId: number, send?: boolean) => void;
 
   scale: number;
   setScale: (scale: number) => void;

@@ -10,7 +10,7 @@ const StructureSide: Component = () => {
 
   return (
     <aside id={'left'} class={'border-r border-r-base-300 bg-base-100 select-none absolute z-20 w-250 h-full top-0 left-0'}>
-      <div style={{ height: '95%' }} class={'p-[5px] text-sm overflow-scroll'}>
+      <div style={{ height: '95%' }} class={'p-[5px] font-sm overflow-scroll'}>
         {store.assets.length ? (
           <h2
             onClick={() => {
@@ -19,7 +19,7 @@ const StructureSide: Component = () => {
               store.assets[0]?.proxies?.param()?.postMessage({ type: USE_REQUEST_CHANGE_NODE_CMD, nodeId: -1 }, getUrl(store.assets[0]));
               store.assets[0]?.proxies?.node()?.postMessage({ type: USE_REQUEST_CHANGE_NODE_CMD, nodeId: -1 }, getUrl(store.assets[0]));
             }}
-            class={`cursor-pointer ${store.activeAssetId === -1 ? 'font-bold' : ''} hover:opacity-80 `}
+            class={`cursor-pointer ${store.activeAssetId === -1 ? 'font-bold' : 'font-light'} hover:opacity-80 `}
           >
             Design
           </h2>
@@ -31,7 +31,7 @@ const StructureSide: Component = () => {
             // 'border-left-style': 'solid',
             height: '95%'
           }}
-          class={'pl-1 text-sm overflow-scroll'}
+          class={'text-sm overflow-scroll'}
         >
           <For each={store.assets.sort((a, b) => b.order - a.order)} fallback={<div />}>
             {(asset) => {

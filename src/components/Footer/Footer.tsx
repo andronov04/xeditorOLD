@@ -16,7 +16,7 @@ const Footer: Component = () => {
           onChange={(e) => {
             store.setTheme((e.target as HTMLSelectElement).value);
           }}
-          class="select font-medium opacity-50 text-right select-xs select-ghost outline-none"
+          class="select font-medium opacity-50 text-right select-xs text-xsss select-ghost outline-none"
         >
           {THEMES.map((theme) => (
             <option selected={theme === store.theme}>{theme}</option>

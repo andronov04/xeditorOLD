@@ -21,11 +21,11 @@ const Header: Component = () => {
             Repeat
           </button>
         ) : null}
-        {(!IS_ON_FRAME || DEV_HEADER) && DEV_ASSET_URL && store.assets.length ? (
-          <button onClick={store.capture} class={'btn btn-xs'}>
-            Capture
-          </button>
-        ) : null}
+        {/*{(!IS_ON_FRAME || DEV_HEADER) && DEV_ASSET_URL && store.assets.length ? (*/}
+        {/*  <button onClick={store.capture} class={'btn btn-xs'}>*/}
+        {/*    Capture*/}
+        {/*  </button>*/}
+        {/*) : null}*/}
       </div>
       <div className={'w-1/3 flex justify-end items-center'}>
         <div>{store.assets.length ? <div className={'px-2 text-xss'}>{Math.floor(store.scale * 100)}%</div> : null}</div>

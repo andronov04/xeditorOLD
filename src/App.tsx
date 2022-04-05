@@ -15,8 +15,10 @@ import {
   USE_REMOVE_ASSET,
   USE_REQUEST_CAPTURE,
   USE_REQUEST_CHANGE_NODE_CMD,
-  USE_SET_NODE, USE_SET_PARAM,
+  USE_SET_NODE,
+  USE_SET_PARAM,
   USE_SET_THEME,
+  USE_SWITCH_NODE,
   USE_UPDATE_HASH
 } from './constants';
 import { debounce, deepCopy, digest, getUrl, postData } from './utils';
@@ -57,77 +59,108 @@ const App: Component = () => {
             }
             (event.data.target as EType[]).map((target) => {
               if (target === EType.ASSET) {
-                asset.proxies?.asset()?.postMessage(event.data.data, event.origin);
+                asset.proxies?.asset?.()?.postMessage(event.data.data, event.origin);
               }
               if (target === EType.NODES) {
-                asset.proxies?.node()?.postMessage(event.data.data, event.origin);
+                asset.proxies?.node?.()?.postMessage(event.data.data, event.origin);
               }
               if (target === EType.PARAMS) {
-                asset.proxies?.param()?.postMessage(event.data.data, event.origin);
+                asset.proxies?.param?.()?.postMessage(event.data.data, event.origin);
               }
             });
             if ([USE_SET_NODE, USE_SET_PARAM].includes(event.data.data.type)) {
               setDigestBounce();
             }
+            if (event.data.data.type === USE_SWITCH_NODE) {
+              const assetId = useStore.getState().assets.find((a) => a && getUrl(a)?.includes(event.origin))?.asset?.id ?? -1;
+              useStore.getState().setActiveAssetId(assetId, false);
+            }
+            break;
+          }
+
+          case RESPONSE_PREPARE: {
+            // // TODO WAIT ALL
+            const responseValue = store.assets.map((a) => {
+              return {
+                id: a.asset?.id,
+                order: a.order,
+                data: {
+                  digest: event.data.data.digest,
+                  hash: event.data.data.hash,
+                  valueState: event.data.data.valueState
+                }
+              };
+            });
+            const responseState = store.assets.map((a) => {
+              return {
+                id: a.asset?.id,
+                order: a.order,
+                data: {
+                  digest: event.data.data.digest,
+                  hash: event.data.data.hash,
+                  state: event.data.data.state
+                }
+              };
+            });
+
+            // TODO Check sort good
+            const valueState = {
+              assets: responseValue,
+              root: {
+                width: useStore.getState().root.width.value,
+                height: useStore.getState().root.height.value
+              }
+            };
+            const digestId = await digest(JSON.stringify(valueState));
+            try {
+              window.parent?.window?.postMessage(
+                {
+                  type: event.data.type,
+                  requestId: event.data.requestId,
+                  data: {
+                    state: {
+                      assets: responseState,
+                      root: {
+                        width: useStore.getState().root.width.value,
+                        height: useStore.getState().root.height.value
+                      }
+                    },
+                    valueState,
+                    digest: digestId
+                  }
+                },
+                document.referrer
+              );
+            } catch (e) {
+              //
+            }
+
+            useStore.getState().setDigest(digestId);
+            break;
+          }
+
+          case USE_PREPARE: {
+            // Get store and digest and hashes from assets;
+            // TODO WAIT ALL
+            setDigest(event.data.requestId);
+            break;
+          }
+
+          case USE_ADD_ASSET: {
+            // Add Asset
+            const asset = {
+              asset: event.data.data,
+              order: 1
+            };
+            store.addAsset(asset);
+            break;
+          }
+
+          case USE_REMOVE_ASSET: {
+            store.removeAsset(event.data.data.assetId);
             break;
           }
         }
-        if (event.data.type === RESPONSE_PREPARE) {
-          // // TODO WAIT ALL
-          const responseValue = store.assets.map((a) => {
-            return {
-              id: a.asset?.id,
-              order: a.order,
-              data: {
-                digest: event.data.data.digest,
-                hash: event.data.data.hash,
-                valueState: event.data.data.valueState
-              }
-            };
-          });
-          const responseState = store.assets.map((a) => {
-            return {
-              id: a.asset?.id,
-              order: a.order,
-              data: {
-                digest: event.data.data.digest,
-                hash: event.data.data.hash,
-                state: event.data.data.state
-              }
-            };
-          });
-
-          // TODO Check sort good
-          const valueState = {
-            assets: responseValue,
-            root: {
-              width: useStore.getState().root.width.value,
-              height: useStore.getState().root.height.value
-            }
-          };
-          const digestId = await digest(JSON.stringify(valueState));
-          // window.parent.window.postMessage(
-          //   {
-          //     type: event.data.type,
-          //     requestId: event.data.requestId,
-          //     data: {
-          //       state: {
-          //         assets: responseState,
-          //         root: {
-          //           width: useStore.getState().root.width.value,
-          //           height: useStore.getState().root.height.value
-          //         }
-          //       },
-          //       valueState,
-          //       digest: digestId
-          //     }
-          //   },
-          //   document.referrer
-          // );
-
-          useStore.getState().setDigest(digestId);
-        }
-
         // if (event.data.type === USE_PREPARE) {
         //   // Get store and digest and hashes from assets;
         //   // TODO WAIT ALL

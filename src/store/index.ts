@@ -2,7 +2,7 @@ import create from 'solid-zustand';
 import produce, { setAutoFreeze } from 'immer';
 import { IAsset, IState } from '../types';
 import { getUrl } from '../utils';
-import { USE_GENERATE, USE_REGENERATE, USE_REPEAT, USE_REQUEST_CAPTURE, USE_SET_THEME } from '../constants';
+import { USE_GENERATE, USE_REGENERATE, USE_REPEAT, USE_REQUEST_CAPTURE, USE_SET_THEME, USE_SWITCH_NODE } from '../constants';
 import { hash, random } from '@andronov04/xsdk';
 
 setAutoFreeze(false);
@@ -58,7 +58,7 @@ export const useStore = create<IState>((set) => ({
       unit: 'px',
       min: 500,
       max: 1000,
-      mode: 'abs',
+      mode: 'abs'
       // minMin: 100,
       // maxMax: 4000
     },
@@ -81,8 +81,31 @@ export const useStore = create<IState>((set) => ({
       })
     ),
 
-  activeAssetId: 1, //-1, // -1 root
-  setActiveAssetId: (assetId) => set(() => ({ activeAssetId: assetId })),
+  activeAssetId: -1, //-1, // -1 root
+  setActiveAssetId: (assetId, send = true) =>
+    set(
+      produce((state) => {
+        if (send) {
+          const data = {
+            type: USE_SWITCH_NODE,
+            from: 0,
+            data: {
+              node: {
+                pk: -1,
+                root: false,
+                slug: '#'
+              }
+            }
+          };
+          state.assets.forEach((asset: IAsset) => {
+            asset.proxies?.param()?.postMessage(data, getUrl(asset));
+            asset.proxies?.node()?.postMessage(data, getUrl(asset));
+            asset.proxies?.asset()?.postMessage(data, getUrl(asset));
+          });
+        }
+        state.activeAssetId = assetId;
+      })
+    ),
 
   scale: 1,
   setScale: (scale) => set(() => ({ scale })),
@@ -119,6 +142,8 @@ export const useStore = create<IState>((set) => ({
       produce((state) => {
         state.assets.forEach((asset: IAsset) => {
           asset.proxies?.param()?.postMessage({ type: USE_REGENERATE, data: { hash: state.hash } }, getUrl(asset));
+          asset.proxies?.node()?.postMessage({ type: USE_REGENERATE, data: { hash: state.hash } }, getUrl(asset));
+          asset.proxies?.asset()?.postMessage({ type: USE_REGENERATE, data: { hash: state.hash } }, getUrl(asset));
         });
       })
     ),

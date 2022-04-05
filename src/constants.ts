@@ -23,6 +23,7 @@ export const USE_SET_NODE = 'X_USE_SET_NODE';
 export const USE_SET_PARAM = 'X_USE_SET_PARAM';
 export const USE_PROXY_TARGET = 'X_USE_PROXY_TARGET';
 export const USE_REGENERATE = 'X_USE_REGENERATE';
+export const USE_SWITCH_NODE = 'X_USE_SWITCH_NODE';
 
 export const THEMES = [
   'light',
